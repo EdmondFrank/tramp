@@ -1,13 +1,66 @@
-2002-08-17  Kai Groﬂjohann  <Kai.Grossjohann@CS.Uni-Dortmund.DE>
+2002-08-20  Michael Albinus  <Michael.Albinus@alcatel.de>
 
-	* tramp.el (tramp-yn-prompt-regexp): New variable.
-	(tramp-action-yn): New function, using it.
+	Branch "completion" created. Version named (temporarily)
+	"2.0.completion".
 
-2002-08-08  Kai Groﬂjohann  <Kai.Grossjohann@CS.Uni-Dortmund.DE>
+2002-08-18  Michael Albinus  <Michael.Albinus@alcatel.de>
 
-	* tramp.el (tramp-feature-write-region-fix): New internal
-	variable.  Not yet used.  Should be used in
-	`tramp-handle-write-region'.
+	* tramp.el (tramp-parse-rhosts),
+	(tramp-parse-rhosts-group),
+	(tramp-parse-shosts),
+	(tramp-parse-shosts-group): New functions.
+
+2002-08-17  Michael Albinus  <Michael.Albinus@alcatel.de>
+
+	* tramp.el (tramp-completion-dissect-file-name),
+	(tramp-completion-dissect-file-name1): New functions.
+
+2002-08-16  Michael Albinus  <Michael.Albinus@alcatel.de>
+
+	* tramp.el (tramp-get-completion-function),
+	(tramp-get-completion-rsh),
+	(tramp-get-completion-ssh),
+	(tramp-get-completion-telnet): New functions.
+	(tramp-methods): Add `tramp-completion-function' for
+	all methods.
+
+2002-08-15  Michael Albinus  <Michael.Albinus@alcatel.de>
+
+	* tramp.el (tramp-get-completion-methods): New function.
+	(tramp-find-default-method): Allow host to be nil (like user).
+
+2002-08-14  Michael Albinus  <Michael.Albinus@alcatel.de>
+
+	* tramp.el (tramp-completion-file-name-regexp-unified),
+	(tramp-completion-file-name-regexp-separate),
+	(tramp-completion-file-name-regexp),
+	(tramp-completion-file-name-handler-alist): New defcustoms.
+	(tramp-completion-file-name-handler): New function. Add
+	`tramp-completion-file-name-handler' to `file-name-handler-alist'.
+	(tramp-run-real-handler): Add `tramp-completion-file-name-handler'
+	to `inhibit-file-name-handlers'.
+	(tramp-completion-handle-file-name-all-completions),
+	(tramp-completion-handle-file-name-completion): New functions.
+	
+2002-08-12  Michael Albinus  <Michael.Albinus@alcatel.de>
+
+	* tramp.el (tramp-invoke-ange-ftp): `tramp-disable-ange-ftp' must
+	be called again after activating `ange-ftp'.
+	(tramp-ange-ftp-file-name-p): Check for Xemacs.
+
+2002-08-08  Michael Albinus  <Michael.Albinus@alcatel.de>
+
+	* tramp.el (tramp-do-copy-or-rename-file): Don't pass KEEP-DATE to
+	tramp-invoke-ange-ftp 'rename.
+	(tramp-handle-write-region): Don't pass LOCKNAME and CONFIRM to
+	tramp-invoke-ange-ftp 'write-region.
+	(tramp-handle-set-file-modes): Change order of FILENAME and MODE
+	passing to tramp-invoke-ange-ftp 'set-file-modes.
+	(tramp-flatten-list): New function. Maybe this functionality does
+	exist already elsewhere in the libraries.
+	(tramp-invoke-ange-ftp): Apply `tramp-flatten-list' to parameter
+	list in order to avoid nested lists, f.e. when invoked from
+	`tramp-handle-dired-call-process'.
 
 2002-08-07  Kai Groﬂjohann  <Kai.Grossjohann@CS.Uni-Dortmund.DE>
 
