@@ -1,12 +1,117 @@
-2001-03-28  Kai Groﬂjohann  <Kai.Grossjohann@CS.Uni-Dortmund.DE>
+2001-05-28  Kai Groﬂjohann  <Kai.Grossjohann@CS.Uni-Dortmund.DE>
 
-	* tramp.el (tramp-handle-file-directory-p): Use `test -d', not
-	`cd', to find out if it's a directory.
+	* tramp.el (tramp-open-connection-telnet): `tramp-read-passwd'
+	called with result of `tramp-wait-for-regexp'.  But the return
+	value of the latter changed, so adjust call of former accordingly.
+	(tramp-open-connection-su): Ditto.
+
+2001-05-28  Mark A. Hershberger  <mah@everybody.org>
+
+	*tramp.el (tramp-methods): Add new entry for smp method.
+	(tramp-perl-mime-encode): New variable to implement mime-encode.
+	(tramp-perl-mime-decode): New variable to implement mime-decode.
+	(tramp-post-connection): Send perl mime-{encode,decode} implementation.
+
+2001-05-28  Kai Groﬂjohann  <Kai.Grossjohann@CS.Uni-Dortmund.DE>
+
+	* tramp.el (tramp-open-connection-setup-interactive-shell): Do
+	`stty kill ^U' in case some system sets it to `@'.  Remove the
+	`stty erase ^?' from yesterday.
+	(tramp-open-connection-telnet): `tramp-wait-for-regexp' returns
+	list of strings, not just one string.  Adjust call of
+	`tramp-read-passwd' accordingly.
+	(tramp-open-connection-su): Ditto.
+
+2001-05-27  Kai Groﬂjohann  <Kai.Grossjohann@CS.Uni-Dortmund.DE>
+
+	* tramp.el (tramp-open-connection-setup-interactive-shell): Do
+	`stty erase ^?' in case some system sets it to `@'.  Suggested by
+	Stefan Monnier.
+
+2001-05-25  Kai Groﬂjohann  <Kai.Grossjohann@CS.Uni-Dortmund.DE>
+
+	* tramp.el (tramp-send-command-and-check): Add a space in the
+	shell command.  Suggested by Yuji Yamao.  (I don't really
+	understand this.)
+	New todo item.
+
+2001-05-03  Kai Groﬂjohann  <Kai.Grossjohann@CS.Uni-Dortmund.DE>
+
+	* tramp.el (tramp-bug): Typo in variables list.  Only include
+	backup-by-copying-when-privileged-mismatch if bound.
+	(tramp-file-name-structure): Allow uppercase characters in file
+	names.  [Would it have been better to bind case-fold-search?]
+
+2001-04-24  Kai Groﬂjohann  <Kai.Grossjohann@CS.Uni-Dortmund.DE>
+
+	* tramp.el (tramp-do-copy-or-rename-file): When moving, be sure to
+	delete the old file in all cases.
+
+2001-04-23  Kai Groﬂjohann  <Kai.Grossjohann@CS.Uni-Dortmund.DE>
+
+	* tramp.el (tramp-send-command-and-check): `2>/dev/null'
+	(tramp-check-ls-command): Don't `2>/dev/null', this is done in
+	tramp-send-command-and-check.
+
+2001-04-13  Kai Groﬂjohann  <Kai.Grossjohann@CS.Uni-Dortmund.DE>
+
+	* tramp.el (tramp-open-connection-setup-interactive-shell): Posix
+	shells don't allow you to turn off the history, so we redirect it
+	to an innocuous file and limits that file's size as much as
+	possible.
+	(tramp-find-executable): Be extra careful when searching for
+	executables, include sentinel string to search for.
+
+2001-04-12  Kai Groﬂjohann  <Kai.Grossjohann@CS.Uni-Dortmund.DE>
+
+	* tramp.el (tramp-handle-write-region): Don't use here document,
+	just send encoded file on stdin.  Suggested by Stefan Monnier.
+
+2001-03-16  Kai Groﬂjohann  <Kai.Grossjohann@CS.Uni-Dortmund.DE>
+
+	* tramp.el (tramp-multi-connect-su): Don't clobber `found'.
+
+2001-03-14  Kai Groﬂjohann  <Kai.Grossjohann@CS.Uni-Dortmund.DE>
+
+	* tramp.el (tramp-methods, tramp-telnet-args): New method
+	parameter `tramp-telnet-args'.
+	(tramp-get-telnet-args): New function.
+	(tramp-open-connection-telnet): Use it.
+
+2001-03-07  Kai Groﬂjohann  <Kai.Grossjohann@CS.Uni-Dortmund.DE>
+
+	* tramp.el (tramp-line-end-position): New implementation, moved to
+	beginning of file.
+	(tramp-multi-connect-rlogin): Unused variable `pw' deleted.
+	(tramp-discard-garbage-erase-buffer): More args.
+	(tramp-open-connection-setup-interactive-shell): Pass more args.
+	(tramp-wait-for-output): Unused variable `result' deleted.
+	(tramp-wait-for-output): Wrong variable.
+	(tramp-octal-to-decimal): Use `x'.
+	(tramp-get-rcp-args): Error message typo.
+	(tramp-temporary-file-directory): Pacify byte-compiler, use funcall.
+
+2001-03-04  Kai Groﬂjohann  <Kai.Grossjohann@CS.Uni-Dortmund.DE>
+
+	* tramp.el (tramp-handle-file-directory-p): Use `test -d' rather
+	than `cd' to check if a file is a directory.  Suggested by Stefan
+	Monnier.
+	(tramp-get-rcp-args): Typo in error message.  This should be
+	`didn't specify rcp args' rather than `didn't specify tramp
+	args'...  A relic of the Great Renaming from RCP to Tramp, no
+	doubt. 
 
 2001-03-03  Kai Groﬂjohann  <Kai.Grossjohann@CS.Uni-Dortmund.DE>
 
-	* tramp.el (tramp-find-shell): Allow `$ ' as remote shell prompt,
-	too.  Reported by Tom Roche.
+	* tramp.el (tramp-find-shell): Allow `$ ' as shell prompt after
+	starting a shell for tilde expansion.
+	(tramp-methods): Expand documentation for `tramp-methods'.
+	(tramp-methods): New method `smx' which is like `sm' but
+	unconditionally starts /bin/sh on the remote end.  This might
+	avoid shell startup overhead.  Patch by Michael Kifer.
+	(tramp-verbose): New default value `10', it seems most people need
+	to set it to this value, anyway, to see what's happening.
+	Suggested by Michael Kifer.
 
 2001-02-28  Kai Groﬂjohann  <Kai.Grossjohann@CS.Uni-Dortmund.DE>
 
@@ -269,7 +374,7 @@
 2000-08-25  Yuji Yamano <yyamano@kt.rim.or.jp>
 
 	* tramp.el (tramp-remote-path): Add "/usr/pkg/bin" to 
-	tramp-remote-path for NetBSD packages.
+	tramp-remote-path for the NetBSD packages.
 
 2000-08-19  Kai Groﬂjohann  <Kai.Grossjohann@CS.Uni-Dortmund.DE>
 

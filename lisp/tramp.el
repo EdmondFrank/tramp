@@ -4,7 +4,7 @@
 
 ;; Author: Kai.Grossjohann@CS.Uni-Dortmund.DE 
 ;; Keywords: comm, processes
-;; Version: $Id: tramp.el,v 2.0.2.3 2001/03/28 21:44:30 grossjoh Exp $
+;; Version: $Id: tramp.el,v 2.0.2.4 2001/06/03 12:13:07 grossjoh Exp $
 
 ;; This file is part of GNU Emacs.
 
@@ -72,7 +72,7 @@
 
 ;;; Code:
 
-(defconst tramp-version "$Id: tramp.el,v 2.0.2.3 2001/03/28 21:44:30 grossjoh Exp $"
+(defconst tramp-version "$Id: tramp.el,v 2.0.2.4 2001/06/03 12:13:07 grossjoh Exp $"
   "This version of tramp.")
 (defconst tramp-bug-report-address "emacs-rcp@ls6.cs.uni-dortmund.de"
   "Email address to send bug reports to.")
@@ -104,7 +104,7 @@
   "Edit remote files with a combination of rsh and rcp or similar programs."
   :group 'files)
 
-(defcustom tramp-verbose 3
+(defcustom tramp-verbose 10
   "*Verbosity level for tramp.el.  0 means be silent, 10 is most verbose."
   :group 'tramp
   :type 'integer)
@@ -164,7 +164,8 @@ use for the remote host."
               (tramp-decoding-command     nil)
               (tramp-encoding-function    nil)
               (tramp-decoding-function    nil)
-              (tramp-telnet-program       nil))
+              (tramp-telnet-program       nil)
+              (tramp-telnet-args          nil))
      ("scp"   (tramp-connection-function  tramp-open-connection-rsh)
               (tramp-rsh-program          "ssh")
               (tramp-rcp-program          "scp")
@@ -178,7 +179,8 @@ use for the remote host."
               (tramp-decoding-command     nil)
               (tramp-encoding-function    nil)
               (tramp-decoding-function    nil)
-              (tramp-telnet-program       nil))
+              (tramp-telnet-program       nil)
+              (tramp-telnet-args          nil))
      ("scp1"  (tramp-connection-function  tramp-open-connection-rsh)
               (tramp-rsh-program          "ssh1")
               (tramp-rcp-program          "scp1")
@@ -192,7 +194,8 @@ use for the remote host."
               (tramp-decoding-command     nil)
               (tramp-encoding-function    nil)
               (tramp-decoding-function    nil)
-              (tramp-telnet-program       nil))
+              (tramp-telnet-program       nil)
+              (tramp-telnet-args          nil))
      ("scp2"  (tramp-connection-function  tramp-open-connection-rsh)
               (tramp-rsh-program          "ssh2")
               (tramp-rcp-program          "scp2")
@@ -206,7 +209,8 @@ use for the remote host."
               (tramp-decoding-command     nil)
               (tramp-encoding-function    nil)
               (tramp-decoding-function    nil)
-              (tramp-telnet-program       nil))
+              (tramp-telnet-program       nil)
+              (tramp-telnet-args          nil))
      ("rsync" (tramp-connection-function  tramp-open-connection-rsh)
               (tramp-rsh-program          "ssh")
               (tramp-rcp-program          "rsync")
@@ -220,7 +224,8 @@ use for the remote host."
               (tramp-decoding-command     nil)
               (tramp-encoding-function    nil)
               (tramp-decoding-function    nil)
-              (tramp-telnet-program       nil))
+              (tramp-telnet-program       nil)
+              (tramp-telnet-args          nil))
      ("ru"    (tramp-connection-function  tramp-open-connection-rsh)
               (tramp-rsh-program          "rsh")
               (tramp-rcp-program          nil)
@@ -235,7 +240,8 @@ use for the remote host."
                "( uudecode -o - 2>/dev/null || uudecode -p 2>/dev/null )")
               (tramp-encoding-function    nil)
               (tramp-decoding-function    uudecode-decode-region)
-              (tramp-telnet-program       nil))
+              (tramp-telnet-program       nil)
+              (tramp-telnet-args          nil))
      ("su"    (tramp-connection-function  tramp-open-connection-rsh)
               (tramp-rsh-program          "ssh")
               (tramp-rcp-program          nil)
@@ -250,7 +256,8 @@ use for the remote host."
                "( uudecode -o - 2>/dev/null || uudecode -p 2>/dev/null )")
               (tramp-encoding-function    nil)
               (tramp-decoding-function    uudecode-decode-region)
-              (tramp-telnet-program       nil))
+              (tramp-telnet-program       nil)
+              (tramp-telnet-args          nil))
      ("su1"   (tramp-connection-function  tramp-open-connection-rsh)
               (tramp-rsh-program          "ssh1")
               (tramp-rcp-program          nil)
@@ -265,7 +272,8 @@ use for the remote host."
                "( uudecode -o - 2>/dev/null || uudecode -p 2>/dev/null )")
               (tramp-encoding-function    nil)
               (tramp-decoding-function    uudecode-decode-region)
-              (tramp-telnet-program       nil))
+              (tramp-telnet-program       nil)
+              (tramp-telnet-args          nil))
      ("su2"   (tramp-connection-function  tramp-open-connection-rsh)
               (tramp-rsh-program          "ssh2")
               (tramp-rcp-program          nil)
@@ -280,7 +288,8 @@ use for the remote host."
                "( uudecode -o - 2>/dev/null || uudecode -p 2>/dev/null )")
               (tramp-encoding-function    nil)
               (tramp-decoding-function    uudecode-decode-region)
-              (tramp-telnet-program       nil))
+              (tramp-telnet-program       nil)
+              (tramp-telnet-args          nil))
      ("rm"    (tramp-connection-function  tramp-open-connection-rsh)
               (tramp-rsh-program          "rsh")
               (tramp-rcp-program          nil)
@@ -294,7 +303,8 @@ use for the remote host."
               (tramp-decoding-command     "mimencode -u -b")
               (tramp-encoding-function    base64-encode-region)
               (tramp-decoding-function    base64-decode-region)
-              (tramp-telnet-program       nil))
+              (tramp-telnet-program       nil)
+              (tramp-telnet-args          nil))
      ("sm"    (tramp-connection-function  tramp-open-connection-rsh)
               (tramp-rsh-program          "ssh")
               (tramp-rcp-program          nil)
@@ -306,6 +316,21 @@ use for the remote host."
               (tramp-su-args              nil)
               (tramp-encoding-command     "mimencode -b")
               (tramp-decoding-command     "mimencode -u -b")
+              (tramp-encoding-function    base64-encode-region)
+              (tramp-decoding-function    base64-decode-region)
+              (tramp-telnet-program       nil)
+              (tramp-telnet-args          nil))
+     ("smp"   (tramp-connection-function  tramp-open-connection-rsh)
+              (tramp-rsh-program          "ssh")
+              (tramp-rcp-program          nil)
+              (tramp-remote-sh            "/bin/sh")
+              (tramp-rsh-args             ("-e" "none"))
+              (tramp-rcp-args             nil)
+              (tramp-rcp-keep-date-arg    nil)
+              (tramp-su-program           nil)
+              (tramp-su-args              nil)
+              (tramp-encoding-command     "tramp_mimencode")
+              (tramp-decoding-command     "tramp_mimedecode")
               (tramp-encoding-function    base64-encode-region)
               (tramp-decoding-function    base64-decode-region)
               (tramp-telnet-program       nil))
@@ -322,7 +347,8 @@ use for the remote host."
               (tramp-decoding-command     "mimencode -u -b")
               (tramp-encoding-function    base64-encode-region)
               (tramp-decoding-function    base64-decode-region)
-              (tramp-telnet-program       nil))
+              (tramp-telnet-program       nil)
+              (tramp-telnet-args          nil))
      ("sm2"   (tramp-connection-function  tramp-open-connection-rsh)
               (tramp-rsh-program          "ssh2")
               (tramp-rcp-program          nil)
@@ -336,7 +362,8 @@ use for the remote host."
               (tramp-decoding-command     "mimencode -u -b")
               (tramp-encoding-function    base64-encode-region)
               (tramp-decoding-function    base64-decode-region)
-              (tramp-telnet-program       nil))
+              (tramp-telnet-program       nil)
+              (tramp-telnet-args          nil))
      ("tm"    (tramp-connection-function  tramp-open-connection-telnet)
               (tramp-rsh-program          nil)
               (tramp-rcp-program          nil)
@@ -350,7 +377,8 @@ use for the remote host."
               (tramp-decoding-command     "mimencode -u -b")
               (tramp-encoding-function    base64-encode-region)
               (tramp-decoding-function    base64-decode-region)
-              (tramp-telnet-program       "telnet"))
+              (tramp-telnet-program       "telnet")
+              (tramp-telnet-args          nil))
      ("tu"    (tramp-connection-function  tramp-open-connection-telnet)
               (tramp-rsh-program          nil)
               (tramp-rcp-program          nil)
@@ -365,7 +393,8 @@ use for the remote host."
                "( uudecode -o - 2>/dev/null || uudecode -p 2>/dev/null )")
               (tramp-encoding-function    nil)
               (tramp-decoding-function    uudecode-decode-region)
-              (tramp-telnet-program       "telnet"))
+              (tramp-telnet-program       "telnet")
+              (tramp-telnet-args          nil))
      ("sum"   (tramp-connection-function  tramp-open-connection-su)
               (tramp-rsh-program          nil)
               (tramp-rcp-program          nil)
@@ -379,7 +408,8 @@ use for the remote host."
               (tramp-decoding-command     "mimencode -u -b")
               (tramp-encoding-function    base64-encode-region)
               (tramp-decoding-function    base64-decode-region)
-              (tramp-telnet-program       nil))
+              (tramp-telnet-program       nil)
+              (tramp-telnet-args          nil))
      ("suu"   (tramp-connection-function  tramp-open-connection-su)
               (tramp-rsh-program          nil)
               (tramp-rcp-program          nil)
@@ -394,7 +424,8 @@ use for the remote host."
                "( uudecode -o - 2>/dev/null || uudecode -p 2>/dev/null )")
               (tramp-encoding-function    nil)
               (tramp-decoding-function    uudecode-decode-region)
-              (tramp-telnet-program       nil))
+              (tramp-telnet-program       nil)
+              (tramp-telnet-args          nil))
      ("sudm"  (tramp-connection-function  tramp-open-connection-su)
               (tramp-rsh-program          nil)
               (tramp-rcp-program          nil)
@@ -408,7 +439,8 @@ use for the remote host."
               (tramp-decoding-command     "mimencode -u -b")
               (tramp-encoding-function    base64-encode-region)
               (tramp-decoding-function    base64-decode-region)
-              (tramp-telnet-program       nil))
+              (tramp-telnet-program       nil)
+              (tramp-telnet-args          nil))
      ("sudu"  (tramp-connection-function  tramp-open-connection-su)
               (tramp-rsh-program          nil)
               (tramp-rcp-program          nil)
@@ -423,7 +455,8 @@ use for the remote host."
                "( uudecode -o - 2>/dev/null || uudecode -p 2>/dev/null )")
               (tramp-encoding-function    nil)
               (tramp-decoding-function    uudecode-decode-region)
-              (tramp-telnet-program       nil))
+              (tramp-telnet-program       nil)
+              (tramp-telnet-args          nil))
      ("multi" (tramp-connection-function  tramp-open-connection-multi)
               (tramp-rsh-program          nil)
               (tramp-rcp-program          nil)
@@ -437,7 +470,8 @@ use for the remote host."
               (tramp-decoding-command     "mimencode -u -b")
               (tramp-encoding-function    base64-encode-region)
               (tramp-decoding-function    base64-decode-region)
-              (tramp-telnet-program       nil))
+              (tramp-telnet-program       nil)
+              (tramp-telnet-args          nil))
      ("multiu" (tramp-connection-function  tramp-open-connection-multi)
               (tramp-rsh-program          nil)
               (tramp-rcp-program          nil)
@@ -452,7 +486,8 @@ use for the remote host."
                "( uudecode -o - 2>/dev/null || uudecode -p 2>/dev/null )")
               (tramp-encoding-function    nil)
               (tramp-decoding-function    uudecode-decode-region)
-              (tramp-telnet-program       nil))
+              (tramp-telnet-program       nil)
+              (tramp-telnet-args          nil))
      ("scpx"  (tramp-connection-function  tramp-open-connection-rsh)
               (tramp-rsh-program          "ssh")
               (tramp-rcp-program          "scp")
@@ -464,7 +499,23 @@ use for the remote host."
               (tramp-decoding-command     nil)
               (tramp-encoding-function    nil)
               (tramp-decoding-function    nil)
-              (tramp-telnet-program       nil))
+              (tramp-telnet-program       nil)
+              (tramp-telnet-args          nil))
+     ("smx"   (tramp-connection-function  tramp-open-connection-rsh)
+              (tramp-rsh-program          "ssh")
+              (tramp-rcp-program          nil)
+              (tramp-remote-sh            "/bin/sh")
+              (tramp-rsh-args             ("-e" "none" "-t" "/bin/sh"))
+              (tramp-rcp-args             nil)
+              (tramp-rcp-keep-date-arg    nil)
+              (tramp-su-program           nil)
+              (tramp-su-args              nil)
+              (tramp-encoding-command     "mimencode -b")
+              (tramp-decoding-command     "mimencode -u -b")
+              (tramp-encoding-function    base64-encode-region)
+              (tramp-decoding-function    base64-decode-region)
+              (tramp-telnet-program       nil)
+              (tramp-telnet-args          nil))
      ("km"
               (tramp-connection-function  tramp-open-connection-rsh)
 	      (tramp-rsh-program          "krlogin")
@@ -479,7 +530,8 @@ use for the remote host."
 	      (tramp-decoding-command     "mimencode -u -b")
 	      (tramp-encoding-function    base64-encode-region)
 	      (tramp-decoding-function    base64-decode-region)
-	      (tramp-telnet-program       nil))
+	      (tramp-telnet-program       nil)
+              (tramp-telnet-args          nil))
      )
   "*Alist of methods for remote files.
 This is a list of entries of the form (NAME PARAM1 PARAM2 ...).
@@ -501,10 +553,11 @@ pair of the form (KEY VALUE).  The following KEYs are defined:
     This specifies the name of the program to use for rsh; this might be
     the full path to rsh or the name of a workalike program.
   * `tramp-rsh-args'
-    This specifies the list of arguments to pass to the above mentioned
-    program.  Please note that this is a list of arguments, that is,
-    normally you don't want to put \"-a -b\" here.  Instead, you want
-    two list elements, one for \"-a\" and one for \"-b\".
+    This specifies the list of arguments to pass to the above
+    mentioned program.  Please note that this is a list of arguments,
+    that is, normally you don't want to put \"-a -b\" or \"-f foo\"
+    here.  Instead, you want two list elements, one for \"-a\" and one
+    for \"-b\", or one for \"-f\" and one for \"foo\".
   * `tramp-rcp-program'
     This specifies the name of the program to use for rcp; this might be
     the full path to rcp or the name of a workalike program.
@@ -542,6 +595,9 @@ pair of the form (KEY VALUE).  The following KEYs are defined:
   * `tramp-telnet-program'
     Specifies the telnet program to use when using
     `tramp-open-connection-telnet' to log in.
+  * `tramp-telnet-args'
+    Specifies list of arguments to pass to `telnet'.  The hints for
+    `tramp-rsh-args' also apply here.
 
 What does all this mean?  Well, you should specify `tramp-rsh-program',
 `tramp-telnet-program' or `tramp-su-program' for all methods; this program
@@ -568,6 +624,16 @@ on the local side to encode or decode the file contents.  Set the
 `tramp-encoding-function' and `tramp-decoding-function' parameters to nil
 in order to use the commands or to the function to use.  It is
 possible to specify one function and the other parameter as nil.
+
+So, to summarize: if the method is an inline method, you must specify
+`tramp-encoding-command' and `tramp-decoding-command', and
+`tramp-rcp-program' must be nil.  If the method is out of band, then
+you must specify `tramp-rcp-program' and `tramp-rcp-args' and
+`tramp-encoding-command' and `tramp-decoding-command' must be nil.
+Every method, inline or out of band, must specify
+`tramp-connection-function' plus the associated arguments (for
+example, the telnet program if you chose
+`tramp-open-connection-telnet').
 
 Notes:
 
@@ -604,7 +670,8 @@ For Irix, no solution is known yet."
                      (list (const tramp-decoding-command) string)
                      (list (const tramp-encoding-function) function)
                      (list (const tramp-decoding-function) function)
-                     (list (const tramp-telnet-program) string)))))
+                     (list (const tramp-telnet-program) string)
+                     (list (const tramp-telnet-args) (repeat string))))))
 
 (defcustom tramp-multi-methods '("multi" "multiu")
   "*List of multi-hop methods.
@@ -705,7 +772,7 @@ Some shells send such garbage upon connection setup."
 ;; File name format.
 
 (defcustom tramp-file-name-structure
-  (list "\\`/r\\(@\\([a-z0-9]+\\)\\)?:\\(\\([-a-z0-9_#]+\\)@\\)?\\([-a-z0-9.]+\\):\\(.*\\)\\'"
+  (list "\\`/r\\(@\\([a-zA-Z0-9]+\\)\\)?:\\(\\([-a-zA-Z0-9_#]+\\)@\\)?\\([-a-zA-Z0-9.]+\\):\\(.*\\)\\'"
         2 4 5 6)
   "*List of five elements (REGEXP METHOD USER HOST FILE), detailing \
 the tramp file name structure.
@@ -937,6 +1004,11 @@ method parameter, as specified in `tramp-methods' (which see).")
 In the connection buffer, this variable has the value of the like-named
 method parameter, as specified in `tramp-methods' (which see).")
 
+(defvar tramp-telnet-args nil
+  "This internal variable holds a parameter for `tramp-methods'.
+In the connection buffer, this variable has the value of the like-named
+method parameter, as specified in `tramp-methods' (which see).")
+
 ;; CCC `local in each buffer'?
 (defvar tramp-ls-command nil
   "This command is used to get a long listing with numeric user and group ids.
@@ -990,6 +1062,52 @@ $s[7], $s[2], $s[1] >> 16 & 0xffff, $s[1] & 0xffff, $s[0] >> 16 & 0xffff, $s[0] 
  )
   "Perl script to produce output suitable for use with `file-attributes'
 on the remote file system.")
+
+;; Perl script to implement `mime-encode'
+(defvar tramp-perl-mime-encode (concat
+ "sub encode_base64 ($);
+  my $buf;
+  while(read(STDIN, $buf, 60*57)) { print encode_base64($buf) }
+  sub encode_base64 ($) {
+    my $res = \"\";
+    my $eol = \"\n\";
+    pos($_[0]) = 0;                          # ensure start at the beginning
+    while ($_[0] =~ /(.{1,45})/gs) {
+	$res .= substr(pack(\"u\", $1), 1);
+	chop($res);
+    }
+    $res =~ tr|` -_|AA-Za-z0-9+/|;               # `# help emacs
+    # fix padding at the end
+    my $padding = (3 - length($_[0]) % 3) % 3;
+    $res =~ s/.{$padding}$/\"=\" x $padding/e if $padding;
+    # break encoded string into lines of no more than 76 characters each
+    if (length $eol) {
+	$res =~ s/(.{1,76})/$1$eol/g;
+    }
+    $res;}"))
+
+;; Perl script to implement `mime-decode'
+(defvar tramp-perl-mime-decode (concat
+ "sub decode_base64 ($);
+  my $buf;
+  while(read(STDIN, $buf, 60*57)) { print decode_base64($buf) }
+  sub decode_base64 ($) {
+    local($^W) = 0; # unpack(\"u\",...) gives bogus warning in 5.00[123]
+
+    my $str = shift;
+    my $res = \"\";
+
+    $str =~ tr|A-Za-z0-9+=/||cd;            # remove non-base64 chars
+    if (length($str) % 4) {
+	warn(\"Length of base64 data not a multiple of 4\")
+    }
+    $str =~ s/=+$//;                        # remove padding
+    $str =~ tr|A-Za-z0-9+/| -_|;            # convert to uuencoded format
+    while ($str =~ /(.{1,60})/gs) {
+	my $len = chr(32 + length($1)*3/4); # compute length byte
+	$res .= unpack(\"u\", $len . $1 );    # uudecode
+    }
+    $res;}"))
 
 ; These values conform to `file-attributes' from XEmacs 21.2.
 ; GNU Emacs and other tools not checked.
@@ -1106,7 +1224,14 @@ remaining args passed to `tramp-message'."
     (set-buffer (tramp-get-buffer multi-method method user host))
     (apply 'tramp-message level fmt-string args)))
 
-
+(defsubst tramp-line-end-position nil
+  "Return point at end of line.
+Calls `line-end-position' or `point-at-eol' if defined, else
+own implementation."
+  (cond
+   ((fboundp 'line-end-position) (funcall 'line-end-position))
+   ((fboundp 'point-at-eol) 	 (funcall 'point-at-eol))
+   (t (save-excursion (end-of-line) (point)))))
 
 ;;; File Name Handler Functions:
 
@@ -1455,6 +1580,8 @@ is initially created and is kept cached by the remote shell."
   ;; CCC: Stefan Monnier says that `test -d' follows symlinks.  And
   ;; I now think he's right.  So we could be using `test -d', couldn't
   ;; we?
+  ;;
+  ;; Alternatives: `cd %s', `test -d %s'
   (save-excursion
     (let ((v (tramp-dissect-file-name filename)))
       (zerop
@@ -1762,10 +1889,11 @@ and `rename'.  FILENAME and NEWNAME must be absolute file names."
           (set-buffer trampbuf) (erase-buffer)
           (insert-file-contents-literally filename)
 	  (let ((coding-system-for-write 'no-conversion))
-	    (write-region (point-min) (point-max) newname)))
-        ;; If the operation was `rename', delete the original file.
-        (unless (eq op 'copy)
-          (delete-file filename))))))
+	    (write-region (point-min) (point-max) newname))))
+
+      ;; If the operation was `rename', delete the original file.
+      (unless (eq op 'copy)
+        (delete-file filename)))))
 
 (defun tramp-do-copy-or-rename-file-directly
   (op multi-method method user host path1 path2 keep-date)
@@ -2373,9 +2501,8 @@ This will break if COMMAND prints a newline, followed by the value of
                 5 "Decoding region into remote file %s..." filename)
                (tramp-send-command
                 multi-method method user host
-                (format "%s <<'%s' >%s" ;mkoeppe: must quote EOF delimiter
+                (format "%s >%s"
                         decoding-command
-                        tramp-end-of-output
                         (tramp-shell-quote-argument path)))
                (set-buffer tmpbuf)
                (tramp-message-for-buffer
@@ -2386,11 +2513,10 @@ This will break if COMMAND prints a newline, followed by the value of
                ;; wait for remote decoding to complete
                (tramp-message-for-buffer
                 multi-method method user host 6 "Sending end of data token...")
-               (tramp-send-command multi-method method user host
-                                 tramp-end-of-output t)
+               (tramp-send-eof multi-method method user host)
                (tramp-message 6 "Waiting for remote host to process data...")
-               ;;(tramp-send-command multi-method method user host "echo hello")
-               ;;(set-buffer (tramp-get-buffer multi-method method user host))
+               (tramp-send-command multi-method method user host "echo hello")
+               (set-buffer (tramp-get-buffer multi-method method user host))
                (tramp-wait-for-output)
                (tramp-barf-unless-okay
                 multi-method method user host nil nil
@@ -2664,7 +2790,8 @@ This function expects to be in the right *tramp* buffer."
      multi-method method user host
      (format (concat "while read d; "
                      "do if test -x $d/%s -a -f $d/%s; "
-                     "then echo $d/%s; break; fi; done <<'EOF'")
+                     "then echo tramp_executable $d/%s; "
+                     "break; fi; done <<'EOF'")
              progname progname progname))
     (mapcar (lambda (d)
               (tramp-send-command multi-method method user host
@@ -2673,9 +2800,11 @@ This function expects to be in the right *tramp* buffer."
     (tramp-send-command multi-method method user host
                         (concat "EOF" tramp-rsh-end-of-line))
     (tramp-wait-for-output)
-    (setq result (buffer-substring (point-min) (tramp-line-end-position)))
-    (when (not (string= result ""))
-      result)))
+    (goto-char (point-max))
+    (when (search-backward "tramp_executable " nil t)
+      (skip-chars-forward "^ ")
+      (skip-chars-forward " ")
+      (buffer-substring (point) (tramp-line-end-position)))))
 
 (defun tramp-set-remote-path (multi-method method user host var dirlist)
   "Sets the remote environment VAR to existing directories from DIRLIST.
@@ -2802,7 +2931,7 @@ otherwise."
       (setq result
             (tramp-send-command-and-check
              multi-method method user host
-             (format "%s -lnd / >/dev/null 2>&1"
+             (format "%s -lnd / >/dev/null"
                      cmd)))
       (tramp-message 7 "Testing remote command `%s' for -n...%s"
                    cmd
@@ -2837,10 +2966,10 @@ Returns nil if none was found, else the command is returned."
 
 (defun tramp-open-connection-telnet (multi-method method user host)
   "Open a connection using a telnet METHOD.
-This starts the command `telnet HOST'[*], then waits for a remote login
-prompt, then sends the user name USER, then waits for a remote password
-prompt.  It queries the user for the password, then sends the password
-to the remote host.
+This starts the command `telnet HOST ARGS'[*], then waits for a remote
+login prompt, then sends the user name USER, then waits for a remote
+password prompt.  It queries the user for the password, then sends the
+password to the remote host.
 
 If USER is nil, uses value returned by `(user-login-name)' instead.
 
@@ -2853,8 +2982,8 @@ transfer method.
 
 Maybe the different regular expressions need to be tuned.
 
-* Actually, the telnet program to be used can be specified in the
-  method parameters, see the variable `tramp-methods'."
+* Actually, the telnet program as well as the args to be used can be
+  specified in the method parameters, see the variable `tramp-methods'."
   (save-match-data
     (when (tramp-method-out-of-band-p multi-method method)
       (error "Cannot use out-of-band method `%s' with telnet connection method"
@@ -2870,10 +2999,12 @@ Maybe the different regular expressions need to be tuned.
              (coding-system-for-read (unless (and (not (featurep 'xemacs))
                                                   (> emacs-major-version 20))
                                        tramp-dos-coding-system))
-             (p (start-process
-                 (tramp-buffer-name multi-method method user host)
-                 (tramp-get-buffer multi-method method user host)
-                 (tramp-get-telnet-program multi-method method) host))
+             (p (apply 'start-process
+                       (tramp-buffer-name multi-method method user host)
+                       (tramp-get-buffer multi-method method user host)
+                       (tramp-get-telnet-program multi-method method)
+                       host
+                       (tramp-get-telnet-args multi-method method)))
              (found nil)
              (pw nil))
         (process-kill-without-query p)
@@ -2894,7 +3025,7 @@ Maybe the different regular expressions need to be tuned.
           (kill-process p)
           (error "Couldn't find remote password prompt"))
         (erase-buffer)
-        (setq pw (tramp-read-passwd found))
+        (setq pw (tramp-read-passwd (car found)))
         (tramp-message 9 "Sending password")
         (process-send-string p (concat pw tramp-rsh-end-of-line))
         (tramp-message 9 "Waiting 30s for remote shell to come up...")
@@ -3060,7 +3191,7 @@ at all unlikely that this variable is set up wrongly!"
           (error "Couldn't find shell or password prompt"))
         (when (nth 1 found)
           (erase-buffer)
-          (setq pw (tramp-read-passwd found))
+          (setq pw (tramp-read-passwd (car found)))
           (tramp-message 9 "Sending password")
           (process-send-string p (concat pw tramp-rsh-end-of-line))
           (tramp-message 9 "Waiting 30s for remote shell to come up...")
@@ -3216,7 +3347,7 @@ If USER is nil, uses the return value of (user-login-name) instead."
         (cmd1 (format-spec command (list (cons ?h host)
                                          (cons ?u (or user (user-login-name)))
                                          (cons ?n ""))))
-        found pw)
+        found)
     (erase-buffer)
     (tramp-message 9 "Sending rlogin command `%s'" cmd1)
     (process-send-string p cmd)
@@ -3280,8 +3411,7 @@ character."
       (kill-process p)
       (error "Couldn't find shell or passwd prompt for %s" 
 	     (or user (user-login-name))))
-    (if (not (nth 1 found))
-        (setq found t)
+    (unless (nth 1 found)
       (tramp-message 9 "Sending password...")
       (tramp-enter-password p (nth 1 found))
       (erase-buffer)
@@ -3372,7 +3502,7 @@ to set up.  METHOD, USER and HOST specify the connection."
   ;; junk first.  It seems that fencepost.gnu.org does this when doing
   ;; a Kerberos login.
   (sit-for 1)
-  (tramp-discard-garbage-erase-buffer p)
+  (tramp-discard-garbage-erase-buffer p multi-method method user host)
   (process-send-string nil (format "exec %s%s"
                                    (tramp-get-remote-sh multi-method method)
                                    tramp-rsh-end-of-line))
@@ -3390,8 +3520,9 @@ to set up.  METHOD, USER and HOST specify the connection."
     (error "Remote `%s' didn't come up.  See buffer `%s' for details"
            (tramp-get-remote-sh multi-method method) (buffer-name)))
   (tramp-message 9 "Setting up remote shell environment")
-  (tramp-discard-garbage-erase-buffer p)
-  (process-send-string nil (format "stty -inlcr -echo%s" tramp-rsh-end-of-line))
+  (tramp-discard-garbage-erase-buffer p multi-method method user host)
+  (process-send-string
+   nil (format "stty -inlcr -echo kill '^U'%s" tramp-rsh-end-of-line))
   (unless (tramp-wait-for-regexp p 30
                                (format "\\(\\$\\|%s\\)" shell-prompt-pattern))
     (pop-to-buffer (buffer-name))
@@ -3444,15 +3575,17 @@ to set up.  METHOD, USER and HOST specify the connection."
           (pop-to-buffer (buffer-name))
           (error "Couldn't `stty -onlcr', see buffer `%s'" (buffer-name))))))
   (erase-buffer)
-  (tramp-message 9 "Waiting 30s for `unset HISTFILE'")
+  (tramp-message
+   9 "Waiting 30s for `HISTFILE=$HOME/.tramp_history; HISTSIZE=1'")
   (process-send-string
-   nil (format "unset HISTFILE%s"      ;mustn't `>/dev/null' with AIX?
+   nil (format "HISTFILE=$HOME/.tramp_history; HISTSIZE=1%s"
                tramp-rsh-end-of-line))
   (unless (tramp-wait-for-regexp
            p 30
            (format "\\(\\$\\|%s\\)" shell-prompt-pattern))
     (pop-to-buffer (buffer-name))
-    (error "Couldn't `unset HISTFILE', see buffer `%s'"
+    (error (concat "Couldn't `HISTFILE=$HOME/.tramp_history; "
+                   "HISTSIZE=1', see buffer `%s'")
            (buffer-name)))
   (erase-buffer)
   (tramp-message 9 "Waiting 30s for `set +o vi +o emacs'")
@@ -3607,13 +3740,38 @@ locale to C and sets up the remote shell search path."
 		 " -e '" tramp-perl-file-attributes "' $1 2>/dev/null"
                  tramp-rsh-end-of-line
 		 "}"))
+	(tramp-wait-for-output)
+	(tramp-message 5 "Sending the Perl `mime-encode' implementation.")
+	(tramp-send-command
+	 multi-method method user host
+	 (concat "tramp_mimencode () {" tramp-rsh-end-of-line
+		 (if (tramp-find-executable multi-method method user host
+                                     "mimencode"  tramp-remote-path t)
+		     "mimencode -b $1" 
+		   (concat tramp-remote-perl
+			   " -e '" tramp-perl-mime-encode "' $1 2>/dev/null"))
+		 tramp-rsh-end-of-line
+		 "}"))
+	(tramp-wait-for-output)
+	(tramp-message 5 "Sending the Perl `mime-decode' implementation.")
+	(tramp-send-command
+	 multi-method method user host
+	 (concat "tramp_mimedecode () {" tramp-rsh-end-of-line
+		 (if (tramp-find-executable multi-method method user host
+                                     "mimencode"  tramp-remote-path t)
+		     "mimencode -u -b $1" 
+		   (concat tramp-remote-perl
+			   " -e '" tramp-perl-mime-decode "' $1 2>/dev/null"))
+		 tramp-rsh-end-of-line
+		 "}"))
 	(tramp-wait-for-output))))
   ;; Find ln(1)
   (erase-buffer)
-  (tramp-set-connection-property "ln"
-				 (tramp-find-executable multi-method method user host
-							"ln" tramp-remote-path nil)
-				 multi-method method user host))
+  (tramp-set-connection-property
+   "ln"
+   (tramp-find-executable multi-method method user host
+                          "ln" tramp-remote-path nil)
+   multi-method method user host))
 
 
 (defun tramp-maybe-open-connection (multi-method method user host)
@@ -3650,7 +3808,6 @@ is true)."
 (defun tramp-wait-for-output (&optional timeout)
   "Wait for output from remote rsh command."
   (let ((proc (get-buffer-process (current-buffer)))
-        (result nil)
         (found nil)
         (start-time (current-time))
         (end-of-output (concat "^"
@@ -3699,7 +3856,7 @@ is true)."
            (tramp-get-debug-buffer tramp-current-multi-method tramp-current-method
                                  tramp-current-user tramp-current-host))
           (goto-char (point-max))
-          (insert "[[Remote prompt `" regexp "' not found"
+          (insert "[[Remote prompt `" end-of-output "' not found"
                   (if timeout (concat " in " timeout " secs") "")
                   "]]"))))
     (goto-char (point-min))
@@ -3729,8 +3886,8 @@ If the optional argument SUBSHELL is non-nil, the command is executed in
 a subshell, ie surrounded by parentheses."
   (tramp-send-command multi-method method user host
                       (concat (if subshell "( " "")
-                              command
-                              (if command " ; " "")
+                              command " 2>/dev/null"
+                              (if command " ; " " ")
                               "echo tramp_exit_status $?"
                               (if subshell " )" "")))
   (tramp-wait-for-output)
@@ -3772,7 +3929,7 @@ METHOD, HOST and USER specify the the connection."
       (error "Can't send EOF to remote host -- not logged in"))
     (process-send-eof proc)))
 
-(defun tramp-discard-garbage-erase-buffer (p)
+(defun tramp-discard-garbage-erase-buffer (p multi-method method user host)
   "Erase buffer, then discard subsequent garbage.
 If `tramp-discard-garbage' is nil, just erase buffer."
   (if (not tramp-discard-garbage)
@@ -3893,8 +4050,8 @@ Not actually used.  Use `(format \"%o\" i)' instead?"
   "Given a string of octal digits, return a decimal number."
   (let ((x (or ostr "")))
     ;; `save-match' is in `tramp-mode-string-to-int' which calls this.
-    (unless (string-match "\\`[0-7]*\\'" ostr)
-      (error "Non-octal junk in string `%s'" ostr))
+    (unless (string-match "\\`[0-7]*\\'" x)
+      (error "Non-octal junk in string `%s'" x))
     (string-to-number ostr 8)))
 
 (defun tramp-shell-case-fold (string)
@@ -4129,7 +4286,7 @@ If the value is not set for the connection, return `default'"
   (second (or (assoc 'tramp-rcp-args
                      (assoc (or multi-method method tramp-default-method)
                             tramp-methods))
-              (error "Method `%s' didn't specify tramp args"
+              (error "Method `%s' didn't specify rcp args"
                      (or multi-method method)))))
 
 (defun tramp-get-rcp-keep-date-arg (multi-method method)
@@ -4188,6 +4345,13 @@ If the value is not set for the connection, return `default'"
               (error "Method `%s' didn't specify a telnet program"
                      (or multi-method method)))))
 
+(defun tramp-get-telnet-args (multi-method method)
+  (second (or (assoc 'tramp-telnet-args
+                     (assoc (or multi-method method tramp-default-method)
+                            tramp-methods))
+              (error "Method `%s' didn't specify telnet args"
+                     (or multi-method method)))))
+
 ;; Auto saving to a special directory.
 
 (defun tramp-make-auto-save-file-name (fn)
@@ -4238,7 +4402,8 @@ ALIST is of the form ((FROM . TO) ...)."
   "Return name of directory for temporary files (compat function).
 For Emacs, this is the variable `temporary-file-directory', for XEmacs
 this is the function `temp-directory'."
-  (cond ((boundp 'temporary-file-directory) temporary-file-directory)
+  (cond ((boundp 'temporary-file-directory)
+         (symbol-value 'temporary-file-directory))
         ((fboundp 'temp-directory)
          (funcall (symbol-function 'temp-directory))) ;pacify byte-compiler
         ((let ((d (getenv "TEMP"))) (and d (file-directory-p d)))
@@ -4275,12 +4440,6 @@ fit in an integer."
          (cadr (let ((borrow (< (cadr t1) (cadr t2))))
                  (list (- (car t1) (car t2) (if borrow 1 0))
                        (- (+ (if borrow 65536 0) (cadr t1)) (cadr t2))))))))
-
-(defalias 'tramp-line-end-position
-  (cond
-   ((fboundp 'line-end-position) 'line-end-position)
-   ((fboundp 'point-at-eol) 	 'point-at-eol)
-   (t (lambda () (save-excursion (end-of-line) (point))))))
 
 (defun tramp-coding-system-change-eol-conversion (coding-system eol-type)
   "Return a coding system like CODING-SYSTEM but with given EOL-TYPE.
@@ -4370,11 +4529,11 @@ Only works for Bourne-like shells."
     (reporter-submit-bug-report
      tramp-bug-report-address		; to-address
      (format "tramp (%s)" tramp-version) ; package name and version
-     '(;; Current state
+     `(;; Current state
        tramp-ls-command
        tramp-test-groks-nt
        tramp-file-exists-command
-       tramp-currrent-multi-method
+       tramp-current-multi-method
        tramp-current-method
        tramp-current-user
        tramp-current-host
@@ -4398,7 +4557,8 @@ Only works for Bourne-like shells."
        backup-by-copying
        backup-by-copying-when-linked
        backup-by-copying-when-mismatch
-       backup-by-copying-when-privileged-mismatch)
+       ,(when (boundp 'backup-by-copying-when-privileged-mismatch)
+          'backup-by-copying-when-privileged-mismatch))
      nil				; pre-hook
      nil				; post-hook
      "\
@@ -4424,6 +4584,8 @@ TRAMP.
 
 ;;; TODO:
 
+;; * Avoid screen blanking when hitting `g' in dired.  (Eli Tziperman)
+;; * Make ffap.el grok Tramp filenames.  (Eli Tziperman)
 ;; * When logging in, keep looking for questions according to an alist
 ;;   and then invoke the right function.
 ;; * Case-insensitive filename completion.  (Norbert Goevert.)
@@ -4443,10 +4605,6 @@ TRAMP.
 ;;   do the right thing.
 ;; * `vc-directory' does not work.  It never displays any files, even
 ;;   if it does show files when run locally.
-;; * Should we make the shell setup stuff smarter?  For example,
-;;   we could try to intercept prompts from the `tset' program
-;;   and enter `dumb' as terminal type.
-;;   "Edward J. Sabol" <sabol@alderaan.gsfc.nasa.gov>
 ;; * Allow correction of passwords, if the remote end allows this.
 ;;   (Mark Hershberger)
 ;; * Bug with file name completion if `@user' part is omitted.
@@ -4490,6 +4648,11 @@ TRAMP.
 ;;   than the individual items MULTI-METHOD, METHOD, USER, HOST, PATH.
 ;; * Implement asynchronous shell commands.
 ;; * Clean up unused *tramp/foo* buffers after a while.  (Pete Forman)
+;; * Progress reports while copying files.  (Michael Kifer)
+;; * `Smart' connection method that uses inline for small and out of
+;;   band for large files.  (Michael Kifer)
+;; * Don't search for perl5 and perl.  Instead, only search for perl and
+;;   then look if it's the right version (with `perl -v').
 
 ;; Functions for file-name-handler-alist:
 ;; diff-latest-backup-file -- in diff.el

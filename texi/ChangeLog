@@ -1,7 +1,20 @@
+2001-03-30  Kai Groﬂjohann  <Kai.Grossjohann@CS.Uni-Dortmund.DE>
+
+	* tramp.texi (External transfer methods): Mention possibility of
+	providing password on command line for scp.
+	(Frequently Asked Questions): Mention Tom Roche's nifty Web page
+	with instructions for NT.
+
 2001-03-26  Kai Groﬂjohann  <Kai.Grossjohann@CS.Uni-Dortmund.DE>
 
 	* tramp.texi (Configuration): Syntax error.  Reported by Tom
 	Roche.
+	(Frequently Asked Questions): Dito.
+
+2001-03-22  Kai Groﬂjohann  <Kai.Grossjohann@CS.Uni-Dortmund.DE>
+
+	* tramp.texi (Frequently Asked Questions): ksh init code to turn
+	off history saving.  From Ted Stern and Tom Roche.
 
 2001-03-01  Kai Groﬂjohann  <Kai.Grossjohann@CS.Uni-Dortmund.DE>
 
@@ -16,7 +29,7 @@
 
 2001-01-04  Yuji Yamano  <yyamano@kt.rim.or.jp>
 
-	* tramp_ja.texi: Sync with tramp.text rev 1.38.
+	* tramp_ja.texi: Sync with tramp.texi rev 1.38.
 
 2001-01-04  Kai Groﬂjohann  <Kai.Grossjohann@CS.Uni-Dortmund.DE>
 
