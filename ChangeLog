@@ -1,11 +1,14 @@
-2001-12-06  Kai Groﬂjohann  <Kai.Grossjohann@CS.Uni-Dortmund.DE>
+2001-12-08  Steve Youngs  <youngs@xemacs.org>
 
-	* Makefile.XEmacs (upstream-cvs-update): Remove target.
-	Suggested by Stephen Turnbull.
+	* Makefile: Re-write.
+	* Makefile.XEmacs: Remove.
 
-	* Makefile: Make it work inside XEmacs, too.  From Stephen
-	J. Turnbull <stephen@xemacs.org>.
-	(MANIFEST): New directory layout.
+2001-12-06  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* Makefile: Conditionally include Makefile.XEmacs.
+	* Makefile.XEmacs:
+	* package-info.in:
+	New files.  Packagize TRAMP.
 
 2001-11-07  Kai Groﬂjohann  <Kai.Grossjohann@CS.Uni-Dortmund.DE>
 
