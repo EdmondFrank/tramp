@@ -1,5 +1,8 @@
 2001-12-08  Steve Youngs  <youngs@xemacs.org>
 
+	* README: Update to reflect XEmacs package branch, add section
+	about getting Tramp2 code.
+
 	* Makefile: Re-write.
 	* Makefile.XEmacs: Remove.
 

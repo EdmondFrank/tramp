@@ -6,28 +6,37 @@ The difference is that Ange-FTP uses FTP to transfer files between the
 local and the remote host, whereas Tramp uses a combination of `rsh'
 and `rcp' or other work-alike programs, such as `ssh'/`scp'.
 
+This is the XEmacs Package version of Tramp.  It is identical to the
+mainline version of Tramp except that it doesn't contain the experimental
+Tramp2 code. (see below "Getting Tramp2")
+
 Files in this directory:
 ------------------------
 
 CONTRIBUTORS            Self-explanatory, I guess
 ChangeLog               List of changes, most recent first.
                         There is a similar file for each directory.
-Makefile                What I use for building Tramp.
-                        This should be improved.
-Makefile.XEmacs         What the XEmacs package maintainer uses to build
-                        Tramp.
+Makefile                Used to build the Tramp XEmacs package
 package-info.in         Used for the XEmacs package.
 
 Subdirectories:
 ---------------
 
-contrib                 Lisp packages used by Tramp which are not part of
-                        Tramp.  Cf. the README file there.
 lisp                    The Tramp Lisp packages.
 test                    Some Lisp files to test Tramp.
 texi                    The documentation.
-tramp2                  An experimental redesign and rewrite of Tramp.
-                        Don't forget your asbestos longjohns if you want
-                        to use this.
+
+
+
+Getting Tramp2:
+---------------
+The experimental Tramp2 code is not included in the XEmacs package.  To
+get hold of it, just grab it from CVS:
+
+   cvs -d :pserver:anonymous@cvs.tramp.sf.net:/cvsroot/tramp co tramp
+
+You'll find the Tramp2 code in the 'tramp2' subdirectory.  But be warned,
+this is experimental code.  More likely than not, it probably won't run,
+and probably will break things.  Use at your own risk.
 
 Kai Grossjohann <Kai.Grossjohann@CS.Uni-Dortmund.DE>
