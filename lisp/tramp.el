@@ -1,10 +1,10 @@
-;;; tramp.el --- Transparent Remote Access, Multiple Protocol
+;;; tramp.el --- Transparent Remote Access, Multiple Protocol -*- coding: iso-8859-1; -*- 
 
 ;; Copyright (C) 1998, 1999, 2000 Free Software Foundation, Inc.
 
 ;; Author: Kai.Grossjohann@CS.Uni-Dortmund.DE 
 ;; Keywords: comm, processes
-;; Version: $Id: tramp.el,v 2.0.2.4 2001/06/03 12:13:07 grossjoh Exp $
+;; Version: $Id: tramp.el,v 2.0.2.5 2001/06/15 11:45:17 grossjoh Exp $
 
 ;; This file is part of GNU Emacs.
 
@@ -72,7 +72,7 @@
 
 ;;; Code:
 
-(defconst tramp-version "$Id: tramp.el,v 2.0.2.4 2001/06/03 12:13:07 grossjoh Exp $"
+(defconst tramp-version "$Id: tramp.el,v 2.0.2.5 2001/06/15 11:45:17 grossjoh Exp $"
   "This version of tramp.")
 (defconst tramp-bug-report-address "emacs-rcp@ls6.cs.uni-dortmund.de"
   "Email address to send bug reports to.")
@@ -1619,7 +1619,7 @@ is initially created and is kept cached by the remote shell."
 
 ;; Other file name ops.
 
-;; Matthias KÅˆppe <mkoeppe@mail.math.uni-magdeburg.de>
+;; Matthias Kˆppe <mkoeppe@mail.math.uni-magdeburg.de>
 (defun tramp-handle-directory-file-name (directory)
   "Like `directory-file-name' for tramp files."
   (if (and (eq (aref directory (- (length directory) 1)) ?/)
@@ -1949,14 +1949,15 @@ If KEEP-DATE is non-nil, preserve the time stamp when copying."
   "Like `delete-file' for tramp files."
   (let ((v (tramp-dissect-file-name (tramp-handle-expand-file-name filename))))
     (save-excursion
-      (tramp-send-command
-       (tramp-file-name-multi-method v)
-       (tramp-file-name-method v)
-       (tramp-file-name-user v)
-       (tramp-file-name-host v)
-       (format "rm -f %s ; echo ok"
-               (tramp-shell-quote-argument (tramp-file-name-path v))))
-      (tramp-wait-for-output))))
+      (unless (zerop (tramp-send-command-and-check
+                      (tramp-file-name-multi-method v)
+                      (tramp-file-name-method v)
+                      (tramp-file-name-user v)
+                      (tramp-file-name-host v)
+                      (format "rm -f %s"
+                              (tramp-shell-quote-argument
+                               (tramp-file-name-path v)))))
+        (signal 'file-error "Couldn't delete Tramp file")))))
 
 ;; Dired.
 
@@ -2501,7 +2502,7 @@ This will break if COMMAND prints a newline, followed by the value of
                 5 "Decoding region into remote file %s..." filename)
                (tramp-send-command
                 multi-method method user host
-                (format "%s >%s"
+                (format "%s >%s <<'EOF'"
                         decoding-command
                         (tramp-shell-quote-argument path)))
                (set-buffer tmpbuf)
@@ -2513,9 +2514,11 @@ This will break if COMMAND prints a newline, followed by the value of
                ;; wait for remote decoding to complete
                (tramp-message-for-buffer
                 multi-method method user host 6 "Sending end of data token...")
-               (tramp-send-eof multi-method method user host)
-               (tramp-message 6 "Waiting for remote host to process data...")
-               (tramp-send-command multi-method method user host "echo hello")
+               (tramp-send-command
+                multi-method method user host "EOF")
+               (tramp-message-for-buffer
+                multi-method method user host 6
+                "Waiting for remote host to process data...")
                (set-buffer (tramp-get-buffer multi-method method user host))
                (tramp-wait-for-output)
                (tramp-barf-unless-okay
@@ -2794,11 +2797,9 @@ This function expects to be in the right *tramp* buffer."
                      "break; fi; done <<'EOF'")
              progname progname progname))
     (mapcar (lambda (d)
-              (tramp-send-command multi-method method user host
-                                  (concat d tramp-rsh-end-of-line)))
+              (tramp-send-command multi-method method user host d))
             dirlist)
-    (tramp-send-command multi-method method user host
-                        (concat "EOF" tramp-rsh-end-of-line))
+    (tramp-send-command multi-method method user host "EOF")
     (tramp-wait-for-output)
     (goto-char (point-max))
     (when (search-backward "tramp_executable " nil t)
@@ -3886,10 +3887,10 @@ If the optional argument SUBSHELL is non-nil, the command is executed in
 a subshell, ie surrounded by parentheses."
   (tramp-send-command multi-method method user host
                       (concat (if subshell "( " "")
-                              command " 2>/dev/null"
-                              (if command " ; " " ")
+                              command
+                              (if command " 2>/dev/null; " "")
                               "echo tramp_exit_status $?"
-                              (if subshell " )" "")))
+                              (if subshell " )" " ")))
   (tramp-wait-for-output)
   (goto-char (point-max))
   (unless (search-backward "tramp_exit_status " nil t)
@@ -3928,6 +3929,7 @@ METHOD, HOST and USER specify the the connection."
     (unless proc
       (error "Can't send EOF to remote host -- not logged in"))
     (process-send-eof proc)))
+;    (process-send-string proc "\^D")))
 
 (defun tramp-discard-garbage-erase-buffer (p multi-method method user host)
   "Erase buffer, then discard subsequent garbage.
@@ -4636,7 +4638,7 @@ TRAMP.
 ;;   transfer method to use.  (Greg Stark)
 ;; * Remove unneeded parameters from methods.
 ;; * Invoke rsync once for copying a whole directory hierarchy.
-;;   (Francesco PotortÅÏ)
+;;   (Francesco PotortÏ)
 ;; * Should we set PATH ourselves or should we rely on the remote end
 ;;   to do it?
 ;; * Do the autoconf thing.
