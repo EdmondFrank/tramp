@@ -1,3 +1,52 @@
+2002-09-04  Michael Albinus  <Michael.Albinus@alcatel.de>
+
+	* tramp.el (tramp-prefix-format),
+	(tramp-postfix-host-format): New format strings. No need for other
+	ones because the `*-regexp' can be used.
+	(tramp-prefix-regexp),
+	(tramp-method-regexp),
+	(tramp-postfix-single-method-regexp),
+	(tramp-postfix-multi-method-regexp),
+	(tramp-postfix-multi-hop-regexp),
+	(tramp-user-regexp),
+	(tramp-postfix-user-regexp),
+	(tramp-host-regexp),
+	(tramp-postfix-host-regexp),
+	(tramp-path-regexp): New atomar regular expressions. If
+	corresponding format strings exist, derived from them.
+	(tramp-file-name-structure),
+	(tramp-multi-file-name-structure),
+	(tramp-multi-file-name-hop-structure),
+	(tramp-make-multi-tramp-file-format),
+	(tramp-completion-mode),
+	(tramp-completion-dissect-file-name),
+	(tramp-parse-rhosts-group),
+	(tramp-parse-shosts-group),
+	(tramp-parse-hosts-group),
+	(tramp-parse-passwd-group): Apply these expressions.
+	(tramp-file-name-structure-unified),
+	(tramp-file-name-structure-separate),
+	(tramp-make-tramp-file-format-unified),
+	(tramp-make-tramp-file-format-separate),
+	(tramp-make-tramp-file-format),
+	(tramp-make-tramp-file-user-nil-format-unified),
+	(tramp-make-tramp-file-user-nil-format-separate),
+	(tramp-make-tramp-file-user-nil-format),
+	(tramp-multi-file-name-structure-unified),
+	(tramp-multi-file-name-structure-separate),
+	(tramp-multi-file-name-hop-structure-unified),
+	(tramp-multi-file-name-hop-structure-separate),
+	(tramp-make-multi-tramp-file-format-unified),
+	(tramp-make-multi-tramp-file-format-separate): Removed.
+	(tramp-make-tramp-file-name): Allow partial tramp file
+	names. Generate tramp file format on-the-fly depending on
+	parameters. Apply atomar format strings resp expressions.
+	(tramp-get-completion-methods),
+	(tramp-get-completion-user-host): Apply `tramp-make-tramp-file-name'.
+	(tramp-parse-hosts-group): Take all host names and IP addresses
+	into account.
+	(tramp-bug): Remove `tramp-make-tramp-file-format'.
+
 2002-09-01  Michael Albinus  <Michael.Albinus@alcatel.de>
 
 	* tramp.el (tramp-methods): Add `tramp-completion-function' for
