@@ -25,7 +25,7 @@
 )
 
 
-(defconst tramp2-version "$Id: tramp2.el,v 2.15.2.2 2001/06/15 11:45:23 grossjoh Exp $"
+(defconst tramp2-version "$Id: tramp2.el,v 2.15.2.3 2001/07/16 09:54:57 grossjoh Exp $"
   "The CVS version number of this tramp2 release.")
 
 
