@@ -774,14 +774,15 @@ shell from reading its init file."
 
 (defcustom tramp-prefix-format
   (if (featurep 'xemacs) "/[" "/")
-  "*String matching the method, user and host name beginning tramp file names."
+  "*String matching the very beginning of tramp file names.
+Used in `tramp-make-tramp-file-name' and `tramp-make-tramp-multi-file-name'."
   :group 'tramp
   :type 'string)
 
 (defcustom tramp-prefix-regexp
   (concat "^" (regexp-quote tramp-prefix-format))
   "*Regexp matching the very beginning of tramp file names.
-Should always start with \"^\"."
+Should always start with \"^\". Derived from `tramp-prefix-format'."
   :group 'tramp
   :type 'regexp)
 
@@ -791,27 +792,53 @@ Should always start with \"^\"."
   :group 'tramp
   :type 'regexp)
 
-;; no `tramp-postfix-single-method-format' needed because no special regexp char
+;; It is a little bit annoying that in XEmacs case this delimeter is different
+;; for single-hop and multi-hop cases.
+(defcustom tramp-postfix-single-method-format
+  (if (featurep 'xemacs) "/" ":")
+  "*String matching delimeter between method and user or host names.
+Applicable for single-hop methods.
+Used in `tramp-make-tramp-file-name'."
+  :group 'tramp
+  :type 'string)
+
 (defcustom tramp-postfix-single-method-regexp
-  (if (featurep 'xemacs) "/" ":")
+  (regexp-quote tramp-postfix-single-method-format)
   "*Regexp matching delimeter between method and user or host names.
-Applicable for single-hop methods."
+Applicable for single-hop methods.
+Derived from `tramp-postfix-single-method-format'."
   :group 'tramp
   :type 'regexp)
 
-;; no `tramp-postfix-multi-method-format' needed because no special regexp char
-(defcustom tramp-postfix-multi-method-regexp
+(defcustom tramp-postfix-multi-method-format
   ":"
+  "*String matching delimeter between method and user or host names.
+Applicable for multi-hop methods.
+Used in `tramp-make-tramp-multi-file-name'."
+  :group 'tramp
+  :type 'string)
+
+(defcustom tramp-postfix-multi-method-regexp
+  (regexp-quote tramp-postfix-multi-method-format)
   "*Regexp matching delimeter between method and user or host names.
-Applicable for multi-hop methods."
+Applicable for multi-hop methods.
+Derived from `tramp-postfix-multi-method-format'."
   :group 'tramp
   :type 'regexp)
 
-;; no `tramp-postfix-multi-hop-format' needed because no special regexp char
-(defcustom tramp-postfix-multi-hop-regexp
+(defcustom tramp-postfix-multi-hop-format
   (if (featurep 'xemacs) "/" ":")
+  "*String matching delimeter between path and next method.
+Applicable for multi-hop methods.
+Used in `tramp-make-tramp-multi-file-name'."
+  :group 'tramp
+  :type 'string)
+
+(defcustom tramp-postfix-multi-hop-regexp
+  (regexp-quote tramp-postfix-multi-hop-format)
   "*Regexp matching delimeter between path and next method.
-Applicable for multi-hop methods."
+Applicable for multi-hop methods.
+Derived from `tramp-postfix-multi-hop-format'."
   :group 'tramp
   :type 'regexp)
 
@@ -821,10 +848,17 @@ Applicable for multi-hop methods."
   :group 'tramp
   :type 'regexp)
 
-;; no `tramp-postfix-user-format' needed because no special regexp char
-(defcustom tramp-postfix-user-regexp
+(defcustom tramp-postfix-user-format
   "@"
-  "*Regexp matching delimeter between user and host names."
+  "*String matching delimeter between user and host names.
+Used in `tramp-make-tramp-file-name' and `tramp-make-tramp-multi-file-name'."
+  :group 'tramp
+  :type 'string)
+
+(defcustom tramp-postfix-user-regexp
+  (regexp-quote tramp-postfix-user-format)
+  "*Regexp matching delimeter between user and host names.
+Derived from `tramp-postfix-user-format'."
   :group 'tramp
   :type 'regexp)
 
@@ -836,13 +870,15 @@ Applicable for multi-hop methods."
 
 (defcustom tramp-postfix-host-format
   (if (featurep 'xemacs) "]" ":")
-  "*String matching delimeter between host and names and paths."
+  "*String matching delimeter between host names and paths.
+Used in `tramp-make-tramp-file-name' and `tramp-make-tramp-multi-file-name'."
   :group 'tramp
   :type 'string)
 
 (defcustom tramp-postfix-host-regexp
   (regexp-quote tramp-postfix-host-format)
-  "*Regexp matching delimeter between host and names and paths."
+  "*Regexp matching delimeter between host names and paths.
+Derived from `tramp-postfix-host-format'."
   :group 'tramp
   :type 'regexp)
 
@@ -1010,12 +1046,12 @@ This regular expression should match exactly all of one hop."
 
 (defcustom tramp-make-multi-tramp-file-format
   (list
-   (concat tramp-prefix-regexp "%m")
-   (concat tramp-postfix-multi-hop-regexp
-    "%m" tramp-postfix-multi-method-regexp
-    "%u" tramp-postfix-user-regexp
+   (concat tramp-prefix-format "%m")
+   (concat tramp-postfix-multi-hop-format
+    "%m" tramp-postfix-multi-method-format
+    "%u" tramp-postfix-user-format
     "%h")
-   (concat tramp-postfix-host-regexp "%p"))
+   (concat tramp-postfix-host-format "%p"))
   "*Describes how to construct a `multi' file name.
 This is a list of three elements PREFIX, HOP and PATH.
 
@@ -3201,6 +3237,7 @@ Falls back to normal file name handler if no tramp file name handler exists."
   "Invoke tramp file name completion handler.
 Falls back to normal file name handler if no tramp file name handler exists."
 ;  (setq tramp-debug-buffer 't)
+;  (tramp-message 1 "%s %s" operation args)
 ;  (tramp-message 1 "%s %s\n%s"
 ;		 operation args (with-output-to-string (backtrace)))
   (let ((fn (assoc operation tramp-completion-file-name-handler-alist)))
@@ -3415,6 +3452,10 @@ Return (nil) if arg is nil."
 
   (let*
       ((fullname (concat directory filename))
+       ;; prepare ange-ftp fix
+       (fix-ange-ftp-string
+	(concat tramp-ftp-method tramp-postfix-single-method-format))
+       (fix-ange-ftp (string-match (concat "^" fix-ange-ftp-string) filename))
        ;; local files
        (result
 	(if (tramp-completion-mode fullname)
@@ -3440,19 +3481,30 @@ Return (nil) if arg is nil."
 	       (fn (tramp-get-completion-function nil m)))
 
 	  (if (or user host)
-	      ;; method dependent user / host combinations
-	      (when fn
-		(setq result (append result (funcall fn method user host))))
+	    ;; method dependent user / host combinations
+	    (when fn
+	      (setq result (append result (funcall fn method user host))))
 	    ;; possible methods
 	    (setq result
 		  (append result (tramp-get-completion-methods m))))
 
-	  ;; ange-ftp completions
+	  ;; Ange-ftp completions.
+	  ;; Filename might have the form "ftp:xxx". Ange-ftp isn't able to
+	  ;; handle the prefix "ftp:" correctly in
+	  ;; `ange-ftp-file-name-all-completions'; it simply calls 
+	  ;;`(all-completions file (ange-ftp-generate-root-prefixes))'.
+	  ;; So we must wrap around.
 	  (when (tramp-ange-ftp-file-name-p nil m)
 	    (setq result (append result
-	      (catch 'tramp-forward-to-ange-ftp
-		(tramp-invoke-ange-ftp 'file-name-all-completions
-				       filename directory)))))))
+	      (mapcar
+	       '(lambda (x) (if fix-ange-ftp (concat fix-ange-ftp-string x) x))
+	       (catch 'tramp-forward-to-ange-ftp
+		 (tramp-invoke-ange-ftp
+		  'file-name-all-completions
+		  (if fix-ange-ftp
+		      (substring filename (length fix-ange-ftp-string))
+		    filename)
+		  directory))))))))
 
       (setq v (delq car v))))
 
@@ -5731,8 +5783,8 @@ remote path name."
       (tramp-make-tramp-multi-file-name multi-method method user host path)
     (format-spec
      (concat tramp-prefix-format
-      (when method (concat "%m" tramp-postfix-single-method-regexp))
-      (when user   (concat "%u" tramp-postfix-user-regexp))
+      (when method (concat "%m" tramp-postfix-single-method-format))
+      (when user   (concat "%u" tramp-postfix-user-format))
       (when host   (concat "%h" tramp-postfix-host-format))
       (when path   (concat "%p")))
     `((?m . ,method) (?u . ,user) (?h . ,host) (?p . ,path)))))

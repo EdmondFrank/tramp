@@ -1,8 +1,22 @@
+2002-09-05  Michael Albinus  <Michael.Albinus@alcatel.de>
+
+	* tramp.el (tramp-postfix-single-method-format),
+	(tramp-postfix-multi-method-format),
+	(tramp-postfix-multi-hop-format),
+	(tramp-postfix-user-format): New format strings.
+	(tramp-postfix-single-method-regexp),
+	(tramp-postfix-multi-method-regexp),
+	(tramp-postfix-multi-hop-regexp),
+	(tramp-postfix-user-regexp),
+	(tramp-make-multi-tramp-file-format),
+	(tramp-make-tramp-file-name): Apply them.
+	(tramp-completion-handle-file-name-all-completions): Fix for
+	invoking ange-ftp in case of "/ftp:xxx" file names.
+
 2002-09-04  Michael Albinus  <Michael.Albinus@alcatel.de>
 
 	* tramp.el (tramp-prefix-format),
-	(tramp-postfix-host-format): New format strings. No need for other
-	ones because the `*-regexp' can be used.
+	(tramp-postfix-host-format): New format strings.
 	(tramp-prefix-regexp),
 	(tramp-method-regexp),
 	(tramp-postfix-single-method-regexp),
