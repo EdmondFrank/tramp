@@ -11,8 +11,8 @@
 @c Version values, for easy modification
 @c NOTE: The 'UPDATED' value is updated by the 'time-stamp' function.
 @c       If you change it by hand, the modifications will not stay.
-@set VERSION $Revision: 2.0.2.1 $
-@set UPDATED Thursday, 1 March, 2001
+@set VERSION $Revision: 2.0.2.2 $
+@set UPDATED Monday, 26 March, 2001
 
 
 @c Entries for @command{install-info} to use
@@ -482,7 +482,7 @@ installed. It is initially configured to use the @command{rsh} and
 
 On some hosts, there are problems with opening a connection.  These are
 related to the behavior of the remote shell.  See @xref{Remote shell
-setup} for details on this.
+setup}, for details on this.
 
 If you do not wish to use these commands to connect to the remote host,
 you should change the default connection and transfer method that @tramp

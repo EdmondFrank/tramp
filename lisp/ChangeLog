@@ -1,3 +1,8 @@
+2001-03-28  Kai Groﬂjohann  <Kai.Grossjohann@CS.Uni-Dortmund.DE>
+
+	* tramp.el (tramp-handle-file-directory-p): Use `test -d', not
+	`cd', to find out if it's a directory.
+
 2001-03-03  Kai Groﬂjohann  <Kai.Grossjohann@CS.Uni-Dortmund.DE>
 
 	* tramp.el (tramp-find-shell): Allow `$ ' as remote shell prompt,

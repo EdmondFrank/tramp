@@ -4,7 +4,7 @@
 
 ;; Author: Kai.Grossjohann@CS.Uni-Dortmund.DE 
 ;; Keywords: comm, processes
-;; Version: $Id: tramp.el,v 2.0.2.2 2001/03/03 00:06:34 grossjoh Exp $
+;; Version: $Id: tramp.el,v 2.0.2.3 2001/03/28 21:44:30 grossjoh Exp $
 
 ;; This file is part of GNU Emacs.
 
@@ -72,7 +72,7 @@
 
 ;;; Code:
 
-(defconst tramp-version "$Id: tramp.el,v 2.0.2.2 2001/03/03 00:06:34 grossjoh Exp $"
+(defconst tramp-version "$Id: tramp.el,v 2.0.2.3 2001/03/28 21:44:30 grossjoh Exp $"
   "This version of tramp.")
 (defconst tramp-bug-report-address "emacs-rcp@ls6.cs.uni-dortmund.de"
   "Email address to send bug reports to.")
@@ -1461,7 +1461,7 @@ is initially created and is kept cached by the remote shell."
        (tramp-send-command-and-check
         (tramp-file-name-multi-method v) (tramp-file-name-method v)
         (tramp-file-name-user v) (tramp-file-name-host v)
-        (format "cd %s"
+        (format "test -d %s"
                 (tramp-shell-quote-argument (tramp-file-name-path v)))
         t)))))                          ;run command in subshell
 

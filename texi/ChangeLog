@@ -1,3 +1,8 @@
+2001-03-26  Kai Groﬂjohann  <Kai.Grossjohann@CS.Uni-Dortmund.DE>
+
+	* tramp.texi (Configuration): Syntax error.  Reported by Tom
+	Roche.
+
 2001-03-01  Kai Groﬂjohann  <Kai.Grossjohann@CS.Uni-Dortmund.DE>
 
 	* tramp.texi (Frequently Asked Questions): Pointer to Joe Stoy's
