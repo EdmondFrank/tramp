@@ -1,3 +1,50 @@
+2002-08-26  Michael Albinus  <Michael.Albinus@alcatel.de>
+
+	* tramp.el (tramp-completion-mode): New function.
+	(tramp-completion-handle-file-name-directory),
+	(tramp-completion-handle-file-name-all-completions): Apply it.
+	(tramp-methods): Remove double definition of `ssh1-old' and
+	`ssh2-old'.
+	(tramp-point-at-eol): New defalias.
+	(tramp-parse-rhosts-group),
+	(tramp-parse-shosts-group):: Apply it.
+
+2002-08-25  Michael Albinus  <Michael.Albinus@alcatel.de>
+
+	* tramp.el (tramp-get-completion-methods),
+	(tramp-get-completion-rsh),
+	(tramp-get-completion-ssh): Add "[" for Xemacs.
+	(tramp-completion-file-name-regexp-separate): Expression adapted.
+	(tramp-completion-file-name-handler-alist): Add handler for
+	`file-name-directory' and `file-name-nondirectory'.
+	(tramp-completion-handle-file-name-directory),
+	(tramp-completion-handle-file-name-nondirectory),
+	(tramp-completion-run-real-handler): New functions.
+	(tramp-completion-file-name-handler),
+	(tramp-completion-handle-file-name-all-completions): Apply
+	`tramp-completion-run-real-handler'.
+	(tramp-parse-rhosts),
+	(tramp-parse-shosts): Use `with-temp-buffer'. `result´ renamed to
+	`res' (otherwise side effects in XEmacs).
+
+2002-08-24  Michael Albinus  <Michael.Albinus@alcatel.de>
+
+	* tramp.el (tramp-completion-file-name-regexp),
+	(tramp-completion-file-name-handler-alist),
+	(tramp-flatten-list),
+	(tramp-completion-dissect-file-name),
+	(tramp-get-completion-rsh),
+	(tramp-parse-rhosts),
+	(tramp-parse-rhosts-group),
+	(tramp-get-completion-ssh): Doc string tuned.
+	(tramp-methods): Doc string and custom type extended for
+	`tramp-completion-function'.
+	(tramp-completion-function): Variable added. Is it really used?
+	Other variables like `tramp-completion-function' aren't used.
+	(tramp-completion-file-name-handler-alist): Add handler for
+	`file-name-completion'.
+	(tramp-completion-handle-file-name-completion): New function.
+
 2002-08-20  Michael Albinus  <Michael.Albinus@alcatel.de>
 
 	Branch "completion" created. Version named (temporarily)

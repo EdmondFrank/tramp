@@ -330,32 +330,6 @@ This variable defaults to CMD.EXE on Windows NT, and to the value of
               (tramp-su-args              nil)
               (tramp-telnet-program       nil)
               (tramp-telnet-args          nil))
-     ("ssh1-old"
-              (tramp-connection-function  tramp-open-connection-rsh)
-              (tramp-completion-function  tramp-get-completion-ssh)
-              (tramp-rsh-program          "ssh1")
-              (tramp-rcp-program          nil)
-              (tramp-remote-sh            "/bin/sh")
-              (tramp-rsh-args             ("-e" "none"))
-              (tramp-rcp-args             nil)
-              (tramp-rcp-keep-date-arg    nil)
-              (tramp-su-program           nil)
-              (tramp-su-args              nil)
-              (tramp-telnet-program       nil)
-              (tramp-telnet-args          nil))
-     ("ssh2-old"
-              (tramp-connection-function  tramp-open-connection-rsh)
-              (tramp-completion-function  tramp-get-completion-ssh)
-              (tramp-rsh-program          "ssh2")
-              (tramp-rcp-program          nil)
-              (tramp-remote-sh            "/bin/sh")
-              (tramp-rsh-args             ("-e" "none"))
-              (tramp-rcp-args             nil)
-              (tramp-rcp-keep-date-arg    nil)
-              (tramp-su-program           nil)
-              (tramp-su-args              nil)
-              (tramp-telnet-program       nil)
-              (tramp-telnet-args          nil))
      ("telnet"
               (tramp-connection-function  tramp-open-connection-telnet)
               (tramp-completion-function  tramp-get-completion-telnet)
@@ -489,6 +463,11 @@ pair of the form (KEY VALUE).  The following KEYs are defined:
     Currently, `tramp-open-connection-rsh', `tramp-open-connection-telnet'
     and `tramp-open-connection-su' are defined.  See the documentation
     of these functions for more details.
+   * `tramp-completion-function'
+    This specifies the function to use to complete the file name.
+    Currently, `tramp-get-completion-rsh', `tramp-get-completion-ssh'
+    and `tramp-get-completion-telnet' are defined.  See the documentation
+    of these functions for more details.
   * `tramp-remote-sh'
     This specifies the Bourne shell to use on the remote host.  This
     MUST be a Bourne-like shell.  It is normally not necessary to set
@@ -605,6 +584,8 @@ For Irix, no solution is known yet."
   :type '(repeat
           (cons string
                 (set (list (const tramp-connection-function) function)
+		     (list (const tramp-completion-function)
+			   (choice (const nil) function))
                      (list (const tramp-rsh-program)
 			   (choice (const nil) string))
                      (list (const tramp-rcp-program)
@@ -885,7 +866,7 @@ Tramp.  See `tramp-file-name-structure-unified' for more explanations.")
 
 ;;;###autoload
 (defconst tramp-completion-file-name-regexp-separate
-  "^/\\[.*$"
+  "^/\\([[][^]]*\\)?$"
   "Value for `tramp-completion-file-name-regexp' for separate remoting.
 XEmacs uses a separate filename syntax for Tramp and EFS.
 See `tramp-file-name-structure-separate' for more explanations.")
@@ -895,9 +876,8 @@ See `tramp-file-name-structure-separate' for more explanations.")
   (if (featurep 'xemacs)
       tramp-completion-file-name-regexp-separate
     tramp-completion-file-name-regexp-unified)
-  "*Regular expression matching incomplete file names handled by tramp
-method / hostname / username completion. This regexp should match incomplete
-tramp file names only.
+  "*Regular expression matching file names handled by tramp completion.
+This regexp should match incomplete tramp file names only.
 
 Please note that the entry in `file-name-handler-alist' is made when
 this file (tramp.el) is loaded.  This means that this variable must be set
@@ -1153,6 +1133,11 @@ the visited file modtime.")
   "String used to recognize end of output.")
 
 (defvar tramp-connection-function nil
+  "This internal variable holds a parameter for `tramp-methods'.
+In the connection buffer, this variable has the value of the like-named
+method parameter, as specified in `tramp-methods' (which see).")
+
+(defvar tramp-completion-function nil
   "This internal variable holds a parameter for `tramp-methods'.
 In the connection buffer, this variable has the value of the like-named
 method parameter, as specified in `tramp-methods' (which see).")
@@ -1491,14 +1476,19 @@ This variable is buffer-local in every buffer.")
         "Alist of handler functions.
 Operations not mentioned here will be handled by the normal Emacs functions.")
 
-;; Handlers for incomplete tramp file names. Until now it is just
-;; `file-name-all-completions'. There might be other candidates (like
-;; `file-name-completion', but I haven't seen the need yet.
+;; Handlers for incomplete tramp file names. For GNU Emacs just
+;; `file-name-all-completions' is needed. The other ones are necessary
+;; for XEmacs.
 (defconst tramp-completion-file-name-handler-alist
-  '((file-name-all-completions . tramp-completion-handle-file-name-all-completions))
-  "Alist of completion handler functions for file names matching
-`tramp-file-name-regexp'. Operations not mentioned here will be handled by
-`tramp-file-name-handler-alist' or the normal Emacs functions.")
+  '(
+    (file-name-directory . tramp-completion-handle-file-name-directory)
+    (file-name-nondirectory . tramp-completion-handle-file-name-nondirectory)
+    (file-name-all-completions . tramp-completion-handle-file-name-all-completions)
+    (file-name-completion . tramp-completion-handle-file-name-completion))
+  "Alist of completion handler functions.
+Used for file names matching `tramp-file-name-regexp'. Operations not
+mentioned here will be handled by `tramp-file-name-handler-alist' or the
+normal Emacs functions.")
 
 ;;; Internal functions which must come first.
 
@@ -3206,6 +3196,24 @@ pass to the OPERATION."
 	 (inhibit-file-name-operation op))
     (apply operation args)))
 
+;; This function is used from `tramp-completion-file-name-handler' functions
+;; only, if `tramp-completion-mode' is true. But this cannot be checked here
+;; because the check is based on a full filename, not available for all
+;; basic I/O operations.
+(defun tramp-completion-run-real-handler (operation args)
+  "Invoke `tramp-file-name-handler' for OPERATION.
+First arg specifies the OPERATION, second arg is a list of arguments to
+pass to the OPERATION."
+  (let* ((op (if (eq operation 'ange-ftp-hook-function)
+		 (car args)
+	       operation))
+	 (inhibit-file-name-handlers
+	  (list 'tramp-completion-file-name-handler
+		(and (eq inhibit-file-name-operation op)
+		     inhibit-file-name-handlers)))
+	 (inhibit-file-name-operation op))
+    (apply operation args)))
+
 ;; Main function.
 ;;;###autoload
 (defun tramp-file-name-handler (operation &rest args)
@@ -3225,7 +3233,7 @@ Falls back to normal file name handler if no tramp file name handler exists."
     (if fn
 	(catch 'tramp-forward-to-ange-ftp
 	  (save-match-data (apply (cdr fn) args)))
-      (tramp-run-real-handler operation args))))
+      (tramp-completion-run-real-handler operation args))))
 
 ;; Register in file name handler alist
 ;;;###autoload
@@ -3272,7 +3280,8 @@ necessary anymore."
 (tramp-repair-jka-compr)
 
 (defun tramp-flatten-list (arg)
-  "Expands all lists inside ARG to a sequential list. Return (nil) if arg is nil."
+  "Expands all lists inside ARG to a sequential list.
+Return (nil) if arg is nil."
   (let ((car (car arg))
 	(cdr (cdr arg)))
     (cond
@@ -3372,6 +3381,31 @@ necessary anymore."
     (tramp-setup-complete)
   (eval-after-load "complete" '(tramp-setup-complete)))
 
+;; Necessary because `tramp-file-name-regexp-unified' and
+;; `tramp-completion-file-name-regexp-unified' aren't different.
+;; In case of XEmacs it is always true.
+(defun tramp-completion-mode (file)
+  "Checks whether method / user name / host name completion is active."
+
+  (cond
+   ((string-match "^/.*:.*:$" file) nil)
+   ((string-match "^/\\([a-zA-Z0-9_-]+\\):$" file)
+    (member (match-string 1 file) (cons "ftp" (mapcar 'car tramp-methods))))
+   (t t)))
+
+;; Path manipulation in case of incomplete TRAMP file names.
+(defun tramp-completion-handle-file-name-directory (file)
+  "Like `file-name-directory' but aware of TRAMP files."
+  (if (tramp-completion-mode file)
+      "/"
+    (tramp-completion-run-real-handler
+     'file-name-directory (list file))))
+
+;; Path manipulation in case of incomplete TRAMP file names.
+(defun tramp-completion-handle-file-name-nondirectory (file)
+  "Like `file-name-nondirectory' but aware of TRAMP files."
+  (substring
+   file (length (tramp-completion-handle-file-name-directory file))))
 
 ;; Method, host name and user name completion.
 ;; `tramp-completion-dissect-file-name' returns a list of
@@ -3379,13 +3413,17 @@ necessary anymore."
 (defun tramp-completion-handle-file-name-all-completions (filename directory)
   "Like `file-name-all-completions' for incomplete tramp files."
 
-  (let ;; local files
-      ((result
-	(tramp-run-real-handler 'file-name-all-completions
-				(list filename directory)))
+  (let*
+      ((fullname (concat directory filename))
+       ;; local files
+       (result
+	(if (tramp-completion-mode fullname)
+	    (tramp-run-real-handler
+	     'file-name-all-completions (list filename directory))
+	  (tramp-completion-run-real-handler
+	   'file-name-all-completions (list filename directory))))
        ;; possible completion structures
-       (v (tramp-completion-dissect-file-name
-	   (concat directory filename))))
+       (v (tramp-completion-dissect-file-name fullname)))
 
     (while v
       (let* ((car (car v))
@@ -3402,9 +3440,9 @@ necessary anymore."
 	       (fn (tramp-get-completion-function nil m)))
 
 	  ;; method dependent user / host combinations
-	  (if fn
-	      (setq result (append result
-		(funcall fn method user host))))
+	  (when fn
+	    (setq result (append result
+	      (funcall fn method user host))))
 
 	  ;; possible methods
 	  (unless (or user host)
@@ -3412,29 +3450,40 @@ necessary anymore."
 	      (tramp-get-completion-methods m))))
 
 	  ;; ange-ftp completions
-	  (if (tramp-ange-ftp-file-name-p nil m)
-	      (setq result (append result
-	        (catch 'tramp-forward-to-ange-ftp
-		  (tramp-invoke-ange-ftp 'file-name-all-completions
-					 filename directory)))))))
+	  (when (tramp-ange-ftp-file-name-p nil m)
+	    (setq result (append result
+	      (catch 'tramp-forward-to-ange-ftp
+		(tramp-invoke-ange-ftp 'file-name-all-completions
+				       filename directory)))))))
 
       (setq v (delq car v))))
 
     ;;; unify list, remove nil elements
     (setq result1 nil)
-    (while result (progn
-      (when (car result) (add-to-list 'result1 (car result)))
-      (setq result (delq (car result) result))))
+    (while result
+      (let ((car (car result)))
+	(when car (add-to-list 'result1 car))
+	(setq result (delq car result))))
 
     result1))
+
+;; Method, host name and user name completion for a file.
+;; Likely necessary for XEmacs only, therefore ange-ftp isn't handled
+(defun tramp-completion-handle-file-name-completion (filename directory)
+  "Like `file-name-completion' for tramp files."
+  (try-completion
+   filename
+   (mapcar (lambda (x) (cons x nil))
+	   (tramp-completion-handle-file-name-all-completions
+	    filename directory))))
 
 ;; I misuse a little bit the tramp-file-name structure in order to handle
 ;; completion possibilities for incomplete methods / user names / host names.
 ;; Return value is a list of tramp-file-name structures according to possible
 ;; completions.
 (defun tramp-completion-dissect-file-name (name)
-  "Returns a list of `tramp-file-name' structures as collected by
-`tramp-completion-dissect-file-name1'."
+  "Returns a list of `tramp-file-name' structures.
+They are collected by `tramp-completion-dissect-file-name1'."
 
   (let ;; Local definitions. Maybe general definitions are better?
       ((tramp-completion-file-name-structure-host
@@ -3457,31 +3506,31 @@ necessary anymore."
        tramp-completion-file-name-structure-method
        name))
 
-;;  (message "tramp-completion-file-name-structure-method '%s'" result)
+;  (tramp-message 10 "tramp-completion-file-name-structure-method '%s'" result)
 
     ;; check user
     (add-to-list 'result
       (tramp-completion-dissect-file-name1
        tramp-completion-file-name-structure-user
-      name))
+       name))
 
-;;  (message "tramp-completion-file-name-structure-user '%s'" result)
+;  (tramp-message 10 "tramp-completion-file-name-structure-user '%s'" result)
 
     ;; check host
     (add-to-list 'result
       (tramp-completion-dissect-file-name1
        tramp-completion-file-name-structure-host
-      name))
+       name))
 
-;;  (message "tramp-completion-file-name-structure-host '%s'" result)
+;  (tramp-message 10 "tramp-completion-file-name-structure-host '%s'" result)
 
     ;; check path
     (add-to-list 'result
       (tramp-completion-dissect-file-name1
        tramp-file-name-structure
-      name))
+       name))
 
-;;  (message "tramp-file-name-structure'%s'" result)
+;  (tramp-message 10 "tramp-completion-file-name-structure '%s'" result)
 
     (delq nil result)))
 
@@ -3528,7 +3577,10 @@ remote host and remote path name."
 	 (<= (length method) (length string))
 	 (string-equal method
 		       (substring string 0 (length method)))
-	 (concat string (if (featurep 'xemacs) "/" ":"))))
+	 (concat
+	  (when (featurep 'xemacs) "[")
+	  string
+	  (if (featurep 'xemacs) "/" ":"))))
      (add-to-list 'all-methods (unless (featurep 'xemacs) "ftp")))))
 
 ;; This function isn't as good as it should because necessary information is
@@ -3538,7 +3590,8 @@ remote host and remote path name."
 ;; whenever it has been collected, and reuse it in later sessions.
 ;; Shining example: .newsrc.eld
 (defun tramp-get-completion-rsh (method user host)
-  "Returns all user/host combinations found in \"/etc/hosts.equiv\" and \"~/.rhosts\"."
+  "Returns all user / host combinations for rsh-like methods.
+Parsed files are \"/etc/hosts.equiv\" and \"~/.rhosts\"."
 
   (mapcar
    '(lambda (l)
@@ -3555,50 +3608,53 @@ remote host and remote path name."
 	      (string-equal user
 			    (substring u 0 (length user)))))
 	 (concat
-	  (if method (concat method (if (featurep 'xemacs) "/" ":")))
-	  (if (and u user) (concat u "@"))
+	  (when (featurep 'xemacs) "[")
+	  (when method (concat method (if (featurep 'xemacs) "/" ":")))
+	  (when (and u user) (concat u "@"))
 	  h (if (featurep 'xemacs) "]" ":")))))
 
       (delq nil (append (tramp-parse-rhosts "/etc/hosts.equiv")
 			(tramp-parse-rhosts "~/.rhosts")))))
 
 (defun tramp-parse-rhosts (filename)
-  "Return a list of (user host) tuples allowed to access. Either user or host
-may be nil"
+  "Return a list of (user host) tuples allowed to access.
+Either user or host may be nil"
 
-  (let ((result nil))
-    (if (file-readable-p filename)
-	(save-match-data
-	  (save-excursion
-	    (set-buffer (generate-new-buffer "*tramp-hosts*"))
-	    (insert-file-contents filename)
-	    (setq buffer-file-name filename)
-	    (setq default-directory (file-name-directory filename))
-	    (normal-mode t)
-	    (setq buffer-file-name nil)
-	    (goto-char (point-min))
-	    (while (not (eobp))
-	      (add-to-list 'result (tramp-parse-rhosts-group)))
-	    (kill-buffer (current-buffer)))))
-    result))
+  (let (res)
+    (when (file-exists-p filename)
+      (with-temp-buffer
+	(insert-file-contents filename)
+	(goto-char (point-min))
+	(while (not (eobp))
+	  (add-to-list 'res (tramp-parse-rhosts-group)))))
+    res))
+
+;; Taken from gnus/netrc.el
+(eval-and-compile
+  (defalias 'tramp-point-at-eol
+    (if (fboundp 'point-at-eol)
+	'point-at-eol
+      'line-end-position)))
 
 (defun tramp-parse-rhosts-group ()
-   "Return a (user host) tuple allowed to access. Either user or host
-may be nil"
+   "Return a (user host) tuple allowed to access.
+Either user or host may be nil"
 
-   (let ((regexp "^\\([a-zA-Z_][a-zA-Z0-9_.-]*\\)\\([ \t]+\\([a-zA-Z_-][a-zA-Z0-9_.-]*\\)\\)?")
+   (let ((regexp "^\\([a-zA-Z0-9_][a-zA-Z0-9_.-]*\\)\\([ \t]+\\([a-zA-Z_-][a-zA-Z0-9_.-]*\\)\\)?")
 	 result)
 
-     (skip-chars-forward " \t\r\n\f")
-     (if (re-search-forward regexp nil t)
-	 (setq result (append (list (match-string 3) (match-string 1)))))
-     (skip-chars-forward "^\r\n\f")
+     (narrow-to-region (point) (tramp-point-at-eol))
+     (when (re-search-forward regexp nil t)
+       (setq result (append (list (match-string 3) (match-string 1)))))
+     (widen)
+     (forward-line 1)
      result))
 
 ;; Same comment as with `tramp-get-completion-rsh'
 (defun tramp-get-completion-ssh (method user host)
-  "Returns all user/host combinations found in \"/etc/{s}hosts.equiv\",
-\"/etc/ssh_known_hosts\", \"~/.{r,s}hosts\" and \"~/.ssh/known_hosts\"."
+  "Returns all user / host combinations for ssh-like methods.
+Parsed files are \"/etc/{s}hosts.equiv\", \"/etc/ssh_known_hosts\",
+\"~/.{r,s}hosts\" and \"~/.ssh/known_hosts\"."
 
   (mapcar
    '(lambda (l)
@@ -3615,8 +3671,9 @@ may be nil"
 	      (string-equal user
 			    (substring u 0 (length user)))))
 	 (concat
-	  (if method (concat method (if (featurep 'xemacs) "/" ":")))
-	  (if (and u user) (concat u "@"))
+	  (when (featurep 'xemacs) "[")
+	  (when method (concat method (if (featurep 'xemacs) "/" ":")))
+	  (when (and u user) (concat u "@"))
 	  h (if (featurep 'xemacs) "]" ":")))))
 
       (delq nil (append (tramp-parse-rhosts "/etc/hosts.equiv")
@@ -3628,42 +3685,37 @@ may be nil"
 
 (defun tramp-parse-shosts (filename)
   "Return a list of (user host) tuples allowed to access.
-User is always nil"
+User is always nil."
 
-  (let ((result nil))
-    (if (file-readable-p filename)
-	(save-match-data
-	  (save-excursion
-	    (set-buffer (generate-new-buffer "*tramp-hosts*"))
-	    (insert-file-contents filename)
-	    (setq buffer-file-name filename)
-	    (setq default-directory (file-name-directory filename))
-	    (normal-mode t)
-	    (setq buffer-file-name nil)
-	    (goto-char (point-min))
-	    (while (not (eobp))
-	      (add-to-list 'result (tramp-parse-shosts-group)))
-	    (kill-buffer (current-buffer)))))
-    result))
+  (let (res)
+    (when (file-exists-p filename)
+      (with-temp-buffer
+	(insert-file-contents filename)
+	(goto-char (point-min))
+	(while (not (eobp))
+	  (add-to-list 'res (tramp-parse-shosts-group)))))
+    res))
 
 (defun tramp-parse-shosts-group ()
-   "Return a (user host) tuple allowed to access. User is always nil"
+   "Return a (user host) tuple allowed to access.
+User is always nil."
 
-   (let ((regexp "^\\([a-zA-Z_][a-zA-Z0-9_.-]*\\)")
+   (let ((regexp "^\\([a-zA-Z0-9_][a-zA-Z0-9_.-]*\\)")
 	 result)
 
-     (skip-chars-forward " \t\r\n\f")
-     (if (re-search-forward regexp nil t)
-	 (setq result (list nil (match-string 1))))
+     (narrow-to-region (point) (tramp-point-at-eol))
+     (when (re-search-forward regexp nil t)
+       (setq result (list nil (match-string 1))))
+     (widen)
      (or
       (> (skip-chars-forward ",") 0)
-      (skip-chars-forward "^\r\n\f"))
+      (forward-line 1))
      result))
 
 ;; Same comment as with `tramp-get-completion-rsh'
 (defun tramp-get-completion-telnet (method user host)
   "Returns all user / host combinations found in \"/etc/hosts\".
-Not implemented yet"
+Not implemented yet."
   nil)
 
 ;;; Internal Functions:
