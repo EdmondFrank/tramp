@@ -1,3 +1,34 @@
+2002-09-01  Michael Albinus  <Michael.Albinus@alcatel.de>
+
+	* tramp.el (tramp-methods): Add `tramp-completion-function' for
+	"su" and "sudo".
+	(tramp-get-completion-telnet): Implement it.
+	(tramp-parse-hosts),
+	(tramp-parse-hosts-group),
+	(tramp-get-completion-su),
+	(tramp-parse-passwd),
+	(tramp-parse-passwd-group): New functions.
+
+2002-08-31  Michael Albinus  <Michael.Albinus@alcatel.de>
+
+	* tramp.el (tramp-completion-mode): Check for `last-input-char'.
+	(tramp-completion-file-name-handler-alist): Add handler
+	for `file-exists-p.
+	(tramp-completion-handle-file-exists-p): New function.
+	(tramp-completion-handle-file-name-completion): Simplified.
+	(tramp-completion-dissect-file-name): Regexp's reorganised.
+	(tramp-completion-handle-file-name-all-completions): Call
+	completion-function only if `user' or `host' is given.
+	(tramp-get-completion-user-host): New function.
+	(tramp-get-completion-rsh),
+	(tramp-get-completion-ssh): Apply it.
+	
+2002-08-29  Michael Albinus  <Michael.Albinus@alcatel.de>
+
+	* tramp.el (tramp-completion-file-name-handler-alist): Add handler
+	for `expand-file-name'.
+	(tramp-completion-handle-expand-file-name): New function.
+
 2002-08-26  Michael Albinus  <Michael.Albinus@alcatel.de>
 
 	* tramp.el (tramp-completion-mode): New function.
