@@ -1,3 +1,14 @@
+2011-04-25  Michael Albinus  <michael.albinus@gmx.de>
+
+	* tramp.el (tramp-process-actions): Add POS argument.  Delete
+	region between POS and (pos).
+	(tramp-do-copy-or-rename-file-out-of-band): Use `nil' position in
+	`tramp-process-actions' call.
+	(tramp-maybe-open-connection): Call `tramp-process-actions' with pos.
+
+	* tramp-smb.el (tramp-smb-maybe-open-connection): Use `nil'
+	position in `tramp-process-actions' call.
+
 2011-03-12  Michael Albinus  <michael.albinus@gmx.de>
 
 	Version 2.1.20 released.
