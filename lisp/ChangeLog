@@ -1,3 +1,8 @@
+2011-08-03  Michael Albinus  <michael.albinus@gmx.de>
+
+	* tramp.el (tramp-open-connection-setup-interactive-shell)
+	(tramp-open-shell): Use `tramp-shell-quote-argument'.
+
 2011-04-25  Michael Albinus  <michael.albinus@gmx.de>
 
 	* tramp.el (tramp-process-actions): Add POS argument.  Delete
