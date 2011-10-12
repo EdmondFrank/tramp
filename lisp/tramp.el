@@ -2485,24 +2485,28 @@ This is intended to be used as a minibuffer `post-command-hook' for
 `file-name-shadow-mode'; the minibuffer should have already
 been set up by `rfn-eshadow-setup-minibuffer'."
   ;; In remote files name, there is a shadowing just for the local part.
-  (let ((end (or (tramp-compat-funcall
-		  'overlay-end (symbol-value 'rfn-eshadow-overlay))
-		 (tramp-compat-funcall 'minibuffer-prompt-end))))
-    (when
-	(file-remote-p
-	 (tramp-compat-funcall 'buffer-substring-no-properties end (point-max)))
-      (save-excursion
-	(save-restriction
-	  (narrow-to-region
-	   (1+ (or (string-match
-		    tramp-rfn-eshadow-update-overlay-regexp (buffer-string) end)
-		   end))
-	   (point-max))
-	  (let ((rfn-eshadow-overlay tramp-rfn-eshadow-overlay)
-		(rfn-eshadow-update-overlay-hook nil))
-	    (tramp-compat-funcall
-	     'move-overlay rfn-eshadow-overlay (point-max) (point-max))
-	    (tramp-compat-funcall 'rfn-eshadow-update-overlay)))))))
+  (ignore-errors
+    (let ((end (or (tramp-compat-funcall
+		    'overlay-end (symbol-value 'rfn-eshadow-overlay))
+		   (tramp-compat-funcall 'minibuffer-prompt-end))))
+      (when
+	  (file-remote-p
+	   (tramp-compat-funcall
+	    'buffer-substring-no-properties end (point-max)))
+	(save-excursion
+	  (save-restriction
+	    (narrow-to-region
+	     (1+ (or (string-match
+		      tramp-rfn-eshadow-update-overlay-regexp
+		      (buffer-string) end)
+		     end))
+	     (point-max))
+	    (let ((rfn-eshadow-overlay tramp-rfn-eshadow-overlay)
+		  (rfn-eshadow-update-overlay-hook nil)
+		  file-name-handler-alist)
+	      (tramp-compat-funcall
+	       'move-overlay rfn-eshadow-overlay (point-max) (point-max))
+	      (tramp-compat-funcall 'rfn-eshadow-update-overlay))))))))
 
 (when (boundp 'rfn-eshadow-update-overlay-hook)
   (add-hook 'rfn-eshadow-update-overlay-hook
@@ -4064,7 +4068,7 @@ The method used must be an out-of-band method."
 	;; password.
 	(setq tramp-current-method (tramp-file-name-method v)
 	      tramp-current-user   (tramp-file-name-user v)
-	      tramp-current-host   (tramp-file-name-host v))
+	      tramp-current-host   (tramp-file-name-real-host v))
 
 	(unwind-protect
 	    (with-temp-buffer
@@ -6829,8 +6833,12 @@ set, is the starting point of the region to be deleted in the
 connection buffer."
   ;; Preserve message for `progress-reporter'.
   (with-temp-message ""
-    ;; Enable auth-source and password-cache.
-    (tramp-set-connection-property vec "first-password-request" t)
+    ;; Enable auth-source and password-cache.  We must use
+    ;; `tramp-file-name-real-host' for the connection property, 'cause
+    ;; that is used when reading the property.
+    (let ((v vec))
+      (aset v 2 (tramp-file-name-real-host vec))
+      (tramp-set-connection-property v "first-password-request" t))
     (save-restriction
       (let (exit)
 	(while (not exit)
