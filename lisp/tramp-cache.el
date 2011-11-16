@@ -145,6 +145,11 @@ Returns VALUE."
 
 (defun tramp-flush-file-property (vec file)
   "Remove all properties of FILE in the cache context of VEC."
+  ;; Remove file property of symlinks.
+  (let ((truename (tramp-get-file-property vec file "file-truename" nil)))
+    (when (and (stringp truename)
+	       (not (string-equal file truename)))
+      (tramp-flush-file-property vec truename)))
   ;; Unify localname.
   (setq vec (copy-sequence vec))
   (aset vec 3 (tramp-run-real-handler 'directory-file-name (list file)))
