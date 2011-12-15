@@ -7210,7 +7210,7 @@ with the encoded or decoded results, respectively.")
     (b64 "recode data..base64" "recode base64..data")
     (b64 tramp-perl-encode-with-module tramp-perl-decode-with-module)
     (b64 tramp-perl-encode tramp-perl-decode)
-    (uu  "uuencode xxx" "uudecode -o /dev/stdout")
+    (uu  "uuencode xxx" "test -c /dev/stdout && uudecode -o /dev/stdout")
     (uu  "uuencode xxx" "uudecode -o -")
     (uu  "uuencode xxx" "uudecode -p")
     (uu  "uuencode xxx" tramp-uudecode)
@@ -7308,7 +7308,7 @@ Goes through the list `tramp-local-coding-commands' and
 		   "Checking remote decoding command `%s' for sanity" rem-dec)
 		  (unless (zerop (tramp-send-command-and-check
 				  vec
-				  (format "echo %s | %s | %s"
+				  (format "echo %s | (%s) | (%s)"
 					  magic rem-enc rem-dec)
 				  t))
 		    (throw 'wont-work-remote nil))

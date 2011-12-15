@@ -1,3 +1,11 @@
+2011-12-15  Michael Albinus  <michael.albinus@gmx.de>
+
+	* tramp.el (tramp-remote-coding-commands): Check "test -c
+	/dev/stdout".  If failing, a regular file would be written
+	otherwise.  Reported by Dmitry Kurochkin
+	<dmitry.kurochkin@gmail.com>.
+	(tramp-find-inline-encoding): Embed checks in parentheses.
+
 2011-11-16  Michael Albinus  <michael.albinus@gmx.de>
 
 	* tramp.el (tramp-handle-file-truename): Cache only the local file name.
