@@ -3424,7 +3424,8 @@ the result will be a local, non-Tramp, file name."
 	;; Set the ownership.
         (when need-chown
           (tramp-set-file-uid-gid filename uid gid))
-	(when (or (eq visit t) (null visit) (stringp visit))
+	(when (and (null noninteractive)
+		   (or (eq visit t) (null visit) (stringp visit)))
 	  (tramp-message v 0 "Wrote %s" filename))
 	(run-hooks 'tramp-handle-write-region-hook)))))
 
@@ -4731,7 +4732,8 @@ connection if a previous connection has died for some reason."
 	      (setenv "PS1" tramp-initial-end-of-output)
               (unless (stringp tramp-encoding-shell)
                 (tramp-error vec 'file-error "`tramp-encoding-shell' not set"))
-	      (let* ((target-alist (tramp-compute-multi-hops vec))
+	      (let* ((current-host (system-name))
+		     (target-alist (tramp-compute-multi-hops vec))
 		     ;; We will apply `tramp-ssh-controlmaster-options'
 		     ;; only for the first hop.
 		     (options (tramp-ssh-controlmaster-options vec))
