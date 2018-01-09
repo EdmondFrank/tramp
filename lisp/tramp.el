@@ -1405,9 +1405,10 @@ values."
     (method user domain host port localname &optional hop)
   "Constructs a Tramp file name from METHOD, USER, HOST and LOCALNAME.
 When not nil, optional DOMAIN, PORT and HOP are used."
+  (when (zerop (length method))
+    (signal 'wrong-type-argument (list 'stringp method)))
   (concat tramp-prefix-format hop
-	  (unless (or (zerop (length method))
-                      (zerop (length tramp-postfix-method-format)))
+	  (unless (zerop (length tramp-postfix-method-format))
 	    (concat method tramp-postfix-method-format))
 	  user
 	  (unless (zerop (length domain))
