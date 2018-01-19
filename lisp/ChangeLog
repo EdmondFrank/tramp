@@ -1,3 +1,8 @@
+2018-01-19  Michael Albinus  <michael.albinus@gmx.de>
+
+	* tramp-smb.el (tramp-smb-errors):
+	Add "NT_STATUS_RESOURCE_NAME_NOT_FOUND".
+
 2018-01-09  Michael Albinus  <michael.albinus@gmx.de>
 
 	* tramp.el (tramp-make-tramp-file-name): Check, that method is
