@@ -122,8 +122,7 @@
 			 (const "obex")
 			 (const "sftp")
 			 (const "smb")
-			 (const "synce")))
-  :require 'tramp)
+			 (const "synce"))))
 
 ;; Add defaults for `tramp-default-user-alist' and `tramp-default-host-alist'.
 ;;;###tramp-autoload
@@ -141,8 +140,7 @@
   "Zeroconf domain to be used for discovering services, like host names."
   :group 'tramp
   :version "23.2"
-  :type 'string
-  :require 'tramp)
+  :type 'string)
 
 ;; Add the methods to `tramp-methods', in order to allow minibuffer
 ;; completion.
@@ -393,8 +391,7 @@ completion, nil means to use always cached values for discovered
 devices."
   :group 'tramp
   :version "23.2"
-  :type '(choice (const nil) integer)
-  :require 'tramp)
+  :type '(choice (const nil) integer))
 
 (defvar tramp-bluez-discovery nil
   "Indicator for a running bluetooth device discovery.
