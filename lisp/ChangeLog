@@ -1,4 +1,4 @@
-2018-05-24  Michael Albinus  <michael.albinus@gmx.de>
+2018-05-29  Michael Albinus  <michael.albinus@gmx.de>
 
 	* tramp.el (tramp-mode, tramp-verbose)
 	(tramp-backup-directory-alist, tramp-auto-save-directory)
@@ -8,16 +8,16 @@
 	(tramp-default-user-alist, tramp-default-host)
 	(tramp-default-host-alist, tramp-default-proxies-alist)
 	(tramp-save-ad-hoc-proxies, tramp-restricted-shell-hosts-alist)
-	(tramp-local-host-regexp, tramp-local-end-of-line)
-	(tramp-rsh-end-of-line, tramp-login-prompt-regexp)
-	(tramp-shell-prompt-pattern, tramp-password-prompt-regexp)
-	(tramp-wrong-passwd-regexp, tramp-yesno-prompt-regexp)
-	(tramp-yn-prompt-regexp, tramp-terminal-prompt-regexp)
+	(tramp-local-end-of-line, tramp-rsh-end-of-line)
+	(tramp-login-prompt-regexp, tramp-shell-prompt-pattern)
+	(tramp-password-prompt-regexp, tramp-wrong-passwd-regexp)
+	(tramp-yesno-prompt-regexp, tramp-yn-prompt-regexp)
+	(tramp-terminal-prompt-regexp)
 	(tramp-operation-not-permitted-regexp, tramp-copy-failed-regexp)
-	(tramp-process-alive-regexp, tramp-ignored-file-name-regexp)
-	(tramp-chunksize, tramp-process-connection-type)
-	(tramp-connection-timeout, tramp-connection-min-time-diff)
-	(tramp-completion-reread-directory-timeout)
+	(tramp-process-alive-regexp, tramp-chunksize)
+	(tramp-process-connection-type, tramp-connection-timeout)
+	(tramp-connection-min-time-diff)
+	(tramp-completion-reread-directory-timeout):
 	* tramp-adb.el (tramp-adb-program)
 	(tramp-adb-connect-if-not-connected, tramp-adb-prompt):
 	* tramp-cache.el (tramp-connection-properties)
