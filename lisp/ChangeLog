@@ -1,3 +1,10 @@
+2018-06-24  Michael Albinus  <michael.albinus@gmx.de>
+
+	* tramp-sh.el (tramp-do-copy-or-rename-file): In case of FILENAME
+	being a directory, check whether `copy-directory' could be
+	avoided.  Suggested by Stephen Nutt <stnutt@gmail.com>.  (Bug#31941)
+	(tramp-do-copy-or-rename-file-directly): Call "cp" with "-r".
+
 2018-05-29  Michael Albinus  <michael.albinus@gmx.de>
 
 	* tramp.el (tramp-mode, tramp-verbose)
