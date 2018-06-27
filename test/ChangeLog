@@ -1,3 +1,11 @@
+2018-06-27  Michael Albinus  <michael.albinus@gmx.de>
+
+	Version 2.3.4 released.
+
+	* tramp-tests.el (tramp-test21-file-links): Adapt test.
+	(tramp--test-emacs25-p): New defun.
+	(tramp-test34-vc-registered): Use it.
+
 2018-02-01  Michael Albinus  <michael.albinus@gmx.de>
 
 	* tramp-tests.el (tramp--test-emacs27-p): New defun.
