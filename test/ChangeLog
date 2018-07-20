@@ -1,3 +1,8 @@
+2018-07-20  Michael Albinus  <michael.albinus@gmx.de>
+
+	* tramp-tests.el (tramp-test21-file-links):
+	Remove `tramp--test-emacs27-p' check.
+
 2018-07-06  Michael Albinus  <michael.albinus@gmx.de>
 
 	* Makefile.in: Use proper spelling "Tramp".
