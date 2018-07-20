@@ -5,6 +5,9 @@
 	* tramp-sh.el (tramp-sh-handle-file-truename): Fix problem
 	with trailing slash.  (Bug#32218)
 
+	* trampver.el.in (customize-package-emacs-version-alist):
+	Add Tramp version integrated in Emacs 26.2.
+
 2018-07-06  Michael Albinus  <michael.albinus@gmx.de>
 
 	* Makefile.in:
