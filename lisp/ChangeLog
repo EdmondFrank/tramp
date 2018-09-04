@@ -1,3 +1,11 @@
+2018-09-04  Michael Albinus  <michael.albinus@gmx.de>
+
+	* tramp.el (tramp-rfn-eshadow-setup-minibuffer): Do not use
+	`symbol-value'.
+	(tramp-rfn-eshadow-update-overlay): Do not use `symbol-value'.  Do
+	not let-bind `rfn-eshadow-overlay', assign it directly (due to
+	lexical binding).  (Bug#32550)
+
 2018-07-20  Michael Albinus  <michael.albinus@gmx.de>
 
 	* tramp.el (tramp-handle-file-truename):
