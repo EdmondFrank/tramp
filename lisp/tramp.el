@@ -1376,7 +1376,7 @@ default values are used."
 When not nil, optional DOMAIN, PORT and HOP are used."
   ;; Unless `tramp-syntax' is `simplified', we need a method.
   (when (and (not (zerop (length tramp-postfix-method-format)))
-	     (zerop (length method)))
+             (zerop (length method)))
     (signal 'wrong-type-argument (list 'stringp method)))
   (concat tramp-prefix-format hop
 	  (unless (zerop (length tramp-postfix-method-format))
