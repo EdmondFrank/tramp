@@ -1,3 +1,8 @@
+2018-12-30  Michael Albinus  <michael.albinus@gmx.de>
+
+	* tramp.el (tramp-eshell-directory-change): Use `path-separator'
+	as it does eshell.  (Bug#31704)
+
 2018-11-30  Glenn Morris  <rgm@gnu.org>
 
 	* trampver.el.in (customize-package-emacs-version-alist):

@@ -4580,10 +4580,11 @@ Only works for Bourne-like shells."
 	       (or
 		;; When `tramp-own-remote-path' is in `tramp-remote-path',
 		;; the remote path is only set in the session cache.
+                ;; Use `path-separator' as it does eshell.
 		(tramp-get-connection-property
 		 (tramp-get-connection-process v) "remote-path" nil)
 		(tramp-get-connection-property v "remote-path" nil))
-	       ":"))
+	       path-separator))
 	  (getenv "PATH"))))
 
 (eval-after-load "esh-util"
