@@ -1,6 +1,6 @@
 ;;; tramp.el --- Transparent Remote Access, Multiple Protocol  -*- lexical-binding:t -*-
 
-;; Copyright (C) 1998-2018 Free Software Foundation, Inc.
+;; Copyright (C) 1998-2019 Free Software Foundation, Inc.
 
 ;; Author: Kai Großjohann <kai.grossjohann@gmx.net>
 ;;         Michael Albinus <michael.albinus@gmx.de>
@@ -2235,6 +2235,7 @@ Falls back to normal file name handler if no Tramp file name handler exists."
 		    ;; Trace that somebody has interrupted the operation.
 		    ((debug quit)
 		     (let (tramp-message-show-message)
+		       (tramp-backtrace v)
 		       (tramp-message
 			v 1 "Interrupt received in operation %s"
 			(cons operation args)))
