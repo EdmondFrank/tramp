@@ -1,3 +1,7 @@
+2019-07-10  Michael Albinus  <michael.albinus@gmx.de>
+
+	* tramp-sh.el (tramp-inline-compress-start-size): Set nil on w32.
+
 2019-06-15  Michael Albinus  <michael.albinus@gmx.de>
 
 	* trampver.el.in (customize-package-emacs-version-alist):
