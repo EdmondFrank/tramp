@@ -1,3 +1,10 @@
+2020-01-18  Michael Albinus  <michael.albinus@gmx.de>
+
+	* tramp-tests.el (tramp-test44-threads): Remove.
+	(tramp-test44-auto-load, tramp-test44-delay-load)
+	(tramp-test44-recursive-load, tramp-test44-remote-load-path)
+	(tramp-test45-unload): Rename.
+
 2020-01-14  Michael Albinus  <michael.albinus@gmx.de>
 
 	* tramp-tests.el (tramp-test31-interrupt-process): Tag it :unstable.
