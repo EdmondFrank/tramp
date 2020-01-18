@@ -1,3 +1,18 @@
+2020-01-18  Michael Albinus  <michael.albinus@gmx.de>
+
+	* tramp.el (tramp-debug-message, tramp-file-name-handler):
+	Don't support threads.
+	(tramp-mutex, tramp-get-mutex): Remove.
+
+	* tramp-cache.el (tramp-cache-print): Don't support threads.
+
+	* tramp-compat.el (tramp-compat-main-thread)
+	(tramp-compat-current-thread, tramp-compat-thread-yield)
+	(tramp-compat-with-mutex): Remove.
+
+	* tramp-ftp.el (ange-ftp-ftp-process-buffer): Don't declare.
+	(tramp-ftp-file-name-handler): Don't support threads.
+
 2020-01-14  Michael Albinus  <michael.albinus@gmx.de>
 
 	* tramp-adb.el (tramp-adb-handle-make-process):
