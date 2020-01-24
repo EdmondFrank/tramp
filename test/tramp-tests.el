@@ -5822,6 +5822,7 @@ process sentinels.  They shall not disturb each other."
   ;; we mark it as unstable.
   :tags '(:expensive-test :unstable)
   (skip-unless (tramp--test-enabled))
+  (skip-unless nil)
   ;; Prior Emacs 27, `shell-file-name' was hard coded as "/bin/sh" for
   ;; remote processes in Emacs.  That doesn't work for tramp-adb.el.
   (skip-unless (or (and (tramp--test-adb-p) (tramp--test-emacs27-p))
