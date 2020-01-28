@@ -1,3 +1,7 @@
+2020-01-28  Michael Albinus  <michael.albinus@gmx.de>
+
+	Version 2.4.3.1 released.
+
 2020-01-27  Michael Albinus  <michael.albinus@gmx.de>
 
 	* tramp.el (tramp-parse-file): Use `insert-file-contents-literally'.
