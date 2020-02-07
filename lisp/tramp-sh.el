@@ -4121,7 +4121,8 @@ file exists and nonzero exit status otherwise."
       (unless extra-args
 	(tramp-send-command vec "rm -f ~/.editrc.tramp" t t)
 	(tramp-barf-if-no-shell-prompt p 10 "Couldn't find remote shell prompt")
-	(tramp-send-command vec "mv -f ~/.editrc ~/.editrc.tramp" t t)
+	(tramp-send-command
+	 vec "test -e ~/.editrc && mv -f ~/.editrc ~/.editrc.tramp" t t)
 	(tramp-barf-if-no-shell-prompt p 10 "Couldn't find remote shell prompt")
 	(tramp-send-command vec "echo 'edit off' >~/.editrc" t t)
 	(tramp-barf-if-no-shell-prompt
@@ -4164,7 +4165,8 @@ file exists and nonzero exit status otherwise."
       ;; Reset ~/.editrc.
       (unless extra-args
 	(tramp-send-command vec "rm -f ~/.editrc" t)
-	(tramp-send-command vec "mv -f ~/.editrc.tramp ~/.editrc" t))
+	(tramp-send-command
+	 vec "test -e ~/.editrc.tramp && mv -f ~/.editrc.tramp ~/.editrc" t))
       ;; Check proper HISTFILE setting.  We give up when not working.
       (when (and (stringp tramp-histfile-override)
 		 (file-name-directory tramp-histfile-override))
