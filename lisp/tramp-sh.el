@@ -1274,8 +1274,8 @@ component is used as the target of the symlink."
 (defun tramp-do-file-attributes-with-ls (vec localname &optional id-format)
   "Implement `file-attributes' for Tramp files using the ls(1) command."
   (let (symlinkp dirp
-		 res-inode res-filemodes res-numlinks
-		 res-uid res-gid res-size res-symlink-target)
+	res-inode res-filemodes res-numlinks
+	res-uid res-gid res-size res-symlink-target)
     (tramp-message vec 5 "file attributes with ls: %s" localname)
     ;; We cannot send all three commands combined, it could exceed
     ;; NAME_MAX or PATH_MAX.  Happened on macOS, for example.
@@ -4107,18 +4107,25 @@ file exists and nonzero exit status otherwise."
   (with-tramp-progress-reporter
       vec 5 (format-message "Opening remote shell `%s'" shell)
     ;; Find arguments for this shell.
-    (let ((extra-args (tramp-get-sh-extra-args shell)))
+    (let ((extra-args (tramp-get-sh-extra-args shell))
+	  (p (tramp-get-connection-process vec)))
       ;; The readline library can disturb Tramp.  For example, the
       ;; very recent version of libedit, the *BSD implementation of
       ;; readline, confuses Tramp.  So we disable line editing.  Since
       ;; $EDITRC is not supported on all target systems, we must move
       ;; ~/.editrc temporarily somewhere else.  For bash and zsh we
       ;; have disabled this already during shell invocation, see
-      ;; `tramp-sh-extra-args'.  Bug#39399.
+      ;; `tramp-sh-extra-args' (Bug#39399).
+      ;; The shell prompt might not be set yet, so we must read any
+      ;; prompt via `tramp-barf-if-no-shell-prompt'.
       (unless extra-args
-	(tramp-send-command vec "rm -f ~/.editrc.tramp" t)
-	(tramp-send-command vec "mv -f ~/.editrc ~/.editrc.tramp" t)
-	(tramp-send-command vec "echo 'edit off' >~/.editrc" t))
+	(tramp-send-command vec "rm -f ~/.editrc.tramp" t t)
+	(tramp-barf-if-no-shell-prompt p 10 "Couldn't find remote shell prompt")
+	(tramp-send-command vec "mv -f ~/.editrc ~/.editrc.tramp" t t)
+	(tramp-barf-if-no-shell-prompt p 10 "Couldn't find remote shell prompt")
+	(tramp-send-command vec "echo 'edit off' >~/.editrc" t t)
+	(tramp-barf-if-no-shell-prompt
+	 p 10 "Couldn't find remote shell prompt"))
       ;; It is useful to set the prompt in the following command
       ;; because some people have a setting for $PS1 which /bin/sh
       ;; doesn't know about and thus /bin/sh will display a strange
@@ -4154,9 +4161,10 @@ file exists and nonzero exit status otherwise."
 	    (tramp-shell-quote-argument tramp-end-of-output)
 	    shell (or extra-args ""))
        t)
+      ;; Reset ~/.editrc.
       (unless extra-args
-	(tramp-send-command
-	 vec "test -e ~/.editrc.tramp && mv -f ~/.editrc.tramp ~/.editrc" t))
+	(tramp-send-command vec "rm -f ~/.editrc" t)
+	(tramp-send-command vec "mv -f ~/.editrc.tramp ~/.editrc" t))
       ;; Check proper HISTFILE setting.  We give up when not working.
       (when (and (stringp tramp-histfile-override)
 		 (file-name-directory tramp-histfile-override))
