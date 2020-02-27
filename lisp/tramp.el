@@ -3204,7 +3204,7 @@ User is always nil."
       (copy-file filename tmpfile 'ok-if-already-exists 'keep-time)
       tmpfile)))
 
-(defun tramp-handle-file-modes (filename)
+(defun tramp-handle-file-modes (filename &optional _flag)
   "Like `file-modes' for Tramp files."
   ;; Starting with Emacs 25.1, `when-let' can be used.
   (let ((attrs (file-attributes (or (file-truename filename) filename))))
