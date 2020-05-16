@@ -76,6 +76,7 @@
 ;; Needed for Emacs 26.
 (defvar async-shell-command-width)
 ;; Needed for Emacs 27.
+(defvar process-file-return-signal-string)
 (defvar shell-command-dont-erase-buffer)
 
 ;; Beautify batch mode.
@@ -4158,7 +4159,7 @@ This tests also `make-symbolic-link', `file-truename' and `add-name-to-file'."
 			   nil nil nil "-c" "exit 42")))
 	    ;; Return exit code in case the process is interrupted,
 	    ;; and there's no indication for a signal describing string.
-	    (let (tramp-process-file-return-signal-string)
+	    (let (process-file-return-signal-string)
 	      (should
 	       (= (+ 128 2)
 		  (process-file
@@ -4166,7 +4167,7 @@ This tests also `make-symbolic-link', `file-truename' and `add-name-to-file'."
 		   nil nil nil "-c" "kill -2 $$"))))
 	    ;; Return string in case the process is interrupted and
 	    ;; there's an indication for a signal describing string.
-	    (let ((tramp-process-file-return-signal-string t))
+	    (let ((process-file-return-signal-string t))
 	      (should
 	       (string-equal
 		"Interrupt"
