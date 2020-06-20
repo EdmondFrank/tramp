@@ -1,3 +1,12 @@
+2020-06-20  Michael Albinus  <michael.albinus@gmx.de>
+
+	* tramp-sh.el (tramp-do-file-attributes-with-stat): Simplify shell
+	command.  Suppress errors (interpret as nil).
+	(tramp-sh-handle-make-process): Do not visit with
+	`insert-file-contents'.  Delete tmp file only if exists.
+	(tramp-send-command-and-read): Suppress `signal-hook-function'
+	when reading expression.
+
 2020-05-29  Michael Albinus  <michael.albinus@gmx.de>
 
 	Version 2.4.3.5 released.
