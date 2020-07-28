@@ -1,3 +1,11 @@
+2020-07-28  Michael Albinus  <michael.albinus@gmx.de>
+
+	* tramp-gvfs.el (top): Adapt `tramp-gvfs-unload-hook'.
+
+	* tramp-sh.el (tramp-open-shell): Remove "~/.editrc" editing.
+	(tramp-open-connection-setup-interactive-shell): Move up "set +o
+	vi +o emacs" command.   (Bug#39399)
+
 2020-06-29  Michael Albinus  <michael.albinus@gmx.de>
 
 	Version 2.4.4 released.
