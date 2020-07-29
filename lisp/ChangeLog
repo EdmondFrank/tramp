@@ -1,3 +1,9 @@
+2020-07-29  Michael Albinus  <michael.albinus@gmx.de>
+
+	Version 2.4.4.1 released.
+
+	* tramp.el: Bump version to 2.4.5-pre.
+
 2020-07-28  Michael Albinus  <michael.albinus@gmx.de>
 
 	* tramp-gvfs.el (top): Adapt `tramp-gvfs-unload-hook'.
