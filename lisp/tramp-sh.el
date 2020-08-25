@@ -3035,6 +3035,10 @@ STDERR can also be a file name."
       (setq signals
 	    (append
 	     '(0) (split-string (shell-command-to-string "kill -l") nil 'omit)))
+      ;; Sanity check.  Sometimes, the first entry is "0", although we
+      ;; don't expect it.  Remove it.
+      (when (and (stringp (cadr signals)) (string-equal "0" (cadr signals)))
+	(setcdr signals (cddr signals)))
       ;; Sanity check.  "kill -l" shall have returned just the signal
       ;; names.  Some shells don't, like the one in "docker alpine".
       (let (signal-hook-function)
