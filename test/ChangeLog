@@ -1,3 +1,9 @@
+2020-08-27  Michael Albinus  <michael.albinus@gmx.de>
+
+	* tramp-tests.el (tramp-test05-expand-file-name)
+	(tramp-test05-expand-file-name-relative): Adapt tests.
+	(tramp--test-emacs28-p): New defun.
+
 2020-08-01  Michael Albinus  <michael.albinus@gmx.de>
 
 	* tramp-tests.el (tramp-test28-process-file): Accept alternative
