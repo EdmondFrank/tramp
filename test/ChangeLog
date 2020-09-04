@@ -1,3 +1,10 @@
+2020-09-04  Eli Zaretskii  <eliz@gnu.org>
+
+	Fix 'expand-file-name' for remote files
+
+	* tramp-tests.el (tramp-test05-expand-file-name): No need to
+	expect different results in Emacs 28 and later.
+
 2020-08-29  Michael Albinus  <michael.albinus@gmx.de>
 
 	Version 2.4.4.2 released.
