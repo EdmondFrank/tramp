@@ -1,3 +1,8 @@
+2020-10-12  Michael Albinus  <michael.albinus@gmx.de>
+
+	* tramp.el (tramp-completion-reread-directory-timeout): Make it obsolete.
+	(Bug#43932)
+
 2020-10-01  Michael Albinus  <michael.albinus@gmx.de>
 
 	* tramp-compat.el (tramp-compat-emacs-compiled-version): New defconst.
