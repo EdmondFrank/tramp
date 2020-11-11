@@ -1,5 +1,12 @@
 2020-11-11  Michael Albinus  <michael.albinus@gmx.de>
 
+	* tramp.el (tramp-handle-directory-files)
+	(tramp-handle-directory-files-and-attributes):
+	* tramp-adb.el (tramp-adb-handle-directory-files-and-attributes):
+	* tramp-rclone.el (tramp-rclone-handle-directory-files):
+	* tramp-sh.el (tramp-sh-handle-directory-files-and-attributes):
+	* tramp-smb.el (tramp-smb-handle-directory-files): Add _COUNT.
+
 	* tramp-gvfs.el (tramp-gvfs-enabled):
 	Increase `max-specpdl-size' temporarily.
 
