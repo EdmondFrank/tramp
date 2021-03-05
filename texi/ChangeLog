@@ -1,3 +1,7 @@
+2021-03-05  Masahiro Nakamura  <tsuucat@icloud.com>
+
+	* tramp.texi (Remote shell setup): Fix reference.
+
 2021-01-05  Michael Albinus  <michael.albinus@gmx.de>
 
 	* tramp.texi (Quick Start Guide): Fix thinko.
