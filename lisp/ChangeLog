@@ -1,3 +1,11 @@
+2021-05-22  Michael Albinus  <michael.albinus@gmx.de>
+
+	* tramp.el (tramp-autoload-file-name-handler):
+	Load tramp-archive.el if needed.  (Bug#48476)
+
+	* tramp-archive.el (tramp-archive-autoload-file-name-handler):
+	Add implementation.
+
 2020-12-29  Michael Albinus  <michael.albinus@gmx.de>
 
 	Version 2.4.5 released.

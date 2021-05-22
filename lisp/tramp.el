@@ -2444,6 +2444,8 @@ Falls back to normal file name handler if no Tramp file name handler exists."
   (tramp-unload-file-name-handlers)
   (if tramp-mode
       (let ((default-directory temporary-file-directory))
+        (if (bound-and-true-p tramp-archive-autoload)
+	    (load "tramp-archive" 'noerror 'nomessage))
 	(load "tramp" 'noerror 'nomessage)))
   (apply operation args)))
 
