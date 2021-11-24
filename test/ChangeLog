@@ -1,3 +1,8 @@
+2021-11-24  Michael Albinus  <michael.albinus@gmx.de>
+
+	* tramp-archive-tests.el (tramp-archive-test02-file-name-dissect):
+	Use `make-tramp-file-name'.
+
 2021-11-19  Michael Albinus  <michael.albinus@gmx.de>
 
 	* tramp-tests.el (tramp-get-remote-gid): Remove declaration.
