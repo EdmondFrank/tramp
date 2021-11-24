@@ -1,5 +1,8 @@
 2021-11-24  Michael Albinus  <michael.albinus@gmx.de>
 
+	* tramp-gvfs.el (tramp-gvfs-handler-mounted-unmounted):
+	Use `make-tramp-file-name'.
+
 	* tramp-sshfs.el (tramp-sshfs-file-name-handler-alist):
 	Use `tramp-handle-file-readable-p'.
 
