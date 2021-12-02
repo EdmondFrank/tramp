@@ -1,3 +1,12 @@
+2021-12-02  Michael Albinus  <michael.albinus@gmx.de>
+
+	* tramp-tests.el (tramp-test45-threads): Remove.
+	(tramp-test45-auto-load, tramp-test45-delay-load)
+	(tramp-test45-recursive-load, tramp-test45-remote-load-path)
+	(tramp-test46-unload):
+	* tramp-archive-tests.el (tramp-archive-test45-auto-load)
+	(tramp-archive-test45-delay-load): Rename.
+
 2021-11-29  Michael Albinus  <michael.albinus@gmx.de>
 
 	Version 2.5.1.5 released.
