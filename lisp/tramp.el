@@ -3896,7 +3896,7 @@ Return nil when there is no lockfile."
 
 (defvar tramp-lock-pid nil
   "A random nunber local for every connection.
-Do not set it manually, it is used buffer-local in `tramp-get-lock-pid'")
+Do not set it manually, it is used buffer-local in `tramp-get-lock-pid'.")
 
 (defun tramp-get-lock-pid (file)
   "Determine pid for lockfile of FILE."
@@ -3917,9 +3917,11 @@ Do not set it manually, it is used buffer-local in `tramp-get-lock-pid'")
   "Like `file-locked-p' for Tramp files."
   (when-let ((info (tramp-get-lock-file file))
 	     (match (string-match tramp-lock-file-info-regexp info)))
-    (or (and (string-equal (match-string 1 info) (user-login-name))
+    (or ; Locked by me.
+        (and (string-equal (match-string 1 info) (user-login-name))
 	     (string-equal (match-string 2 info) (system-name))
 	     (string-equal (match-string 3 info) (tramp-get-lock-pid file)))
+	; User name.
 	(match-string 1 info))))
 
 (defun tramp-handle-lock-file (file)
