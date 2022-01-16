@@ -1,3 +1,9 @@
+2022-01-16  Michael Albinus  <michael.albinus@gmx.de>
+
+	* configure.ac: Bump version (to 2.5.3-pre).
+
+	* INSTALL: Regenerate.
+
 2022-01-01  Michael Albinus  <michael.albinus@gmx.de>
 
 	Update copyrights.
