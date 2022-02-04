@@ -6089,13 +6089,13 @@ Use direct async.")
 	(ignore-errors (delete-file tmp-name1))
 	(tramp-cleanup-connection tramp-test-vec 'keep-debug 'keep-password)))))
 
-;; The function was introduced in Emacs 28.1.
+;; The functions were introduced in Emacs 28.1.
 (ert-deftest tramp-test39-detect-external-change ()
   "Check that an external file modification is reported."
   (skip-unless (tramp--test-enabled))
   (skip-unless (not (tramp--test-ange-ftp-p)))
   ;; Since Emacs 28.1.
-  (skip-unless (fboundp 'file-locked-p))
+  (skip-unless (and (fboundp 'lock-file) (fboundp 'file-locked-p)))
 
   (dolist (quoted (if (tramp--test-expensive-test-p) '(nil t) '(nil)))
     (dolist (create-lockfiles '(nil t))
@@ -6122,37 +6122,39 @@ Use direct async.")
 		  (save-buffer))
 		(should-not (file-locked-p tmp-name))
 
-		;; For local files, just changing the file
-		;; modification on disk doesn't hurt, because file
-		;; contents in buffer and on disk are equal.  For
-		;; remote files, file contents is not compared.  We
-		;; mock an older modification time in buffer, because
-		;; Tramp regards modification times equal if they
-		;; differ for less than 2 seconds.
-		(set-visited-file-modtime (time-add (current-time) -60))
-		;; Some Tramp methods cannot check the file
-		;; modification time properly, for them it doesn't
-		;; make sense to test.
-		(when (not (verify-visited-file-modtime))
-		  (cl-letf (((symbol-function 'read-char-choice)
-			     (lambda (prompt &rest _) (message "%s" prompt) ?y)))
-		    (ert-with-message-capture captured-messages
-		      (insert "bar")
-		      (when create-lockfiles
-			(should (string-match-p
-				 (format
-				  "^%s changed on disk; really edit the buffer\\?"
-				  (if (tramp--test-crypt-p)
-				      ".+" (file-name-nondirectory tmp-name)))
-				 captured-messages))
-			(should (file-locked-p tmp-name)))))
+		;; Macro `ert-with-message-capture' was introduced in Emacs 26.1.
+		(with-no-warnings (when (symbol-plist 'ert-with-message-capture)
+		  ;; For local files, just changing the file
+		  ;; modification on disk doesn't hurt, because file
+		  ;; contents in buffer and on disk are equal.  For
+		  ;; remote files, file contents is not compared.  We
+		  ;; mock an older modification time in buffer,
+		  ;; because Tramp regards modification times equal if
+		  ;; they differ for less than 2 seconds.
+		  (set-visited-file-modtime (time-add (current-time) -60))
+		  ;; Some Tramp methods cannot check the file
+		  ;; modification time properly, for them it doesn't
+		  ;; make sense to test.
+		  (when (not (verify-visited-file-modtime))
+		    (cl-letf (((symbol-function 'read-char-choice)
+			       (lambda (prompt &rest _) (message "%s" prompt) ?y)))
+		      (ert-with-message-capture captured-messages
+		        (insert "bar")
+			(when create-lockfiles
+			  (should (string-match-p
+				   (format
+				    "^%s changed on disk; really edit the buffer\\?"
+				    (if (tramp--test-crypt-p)
+					".+" (file-name-nondirectory tmp-name)))
+				   captured-messages))
+			  (should (file-locked-p tmp-name)))))
 
-		  ;; `save-buffer' removes the file lock.
-		  (cl-letf (((symbol-function 'yes-or-no-p) #'tramp--test-always)
-			    ((symbol-function 'read-char-choice)
-			     (lambda (&rest _) ?y)))
-		    (save-buffer))
-		  (should-not (file-locked-p tmp-name))))
+		    ;; `save-buffer' removes the file lock.
+		    (cl-letf (((symbol-function 'yes-or-no-p) #'tramp--test-always)
+			      ((symbol-function 'read-char-choice)
+			       (lambda (&rest _) ?y)))
+		      (save-buffer))
+		    (should-not (file-locked-p tmp-name))))))
 
 	    ;; Cleanup.
 	    (set-buffer-modified-p nil)
