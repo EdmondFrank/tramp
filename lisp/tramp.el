@@ -2680,6 +2680,8 @@ Falls back to normal file name handler if no Tramp file name handler exists."
       (load "tramp" 'noerror 'nomessage)))
   (apply operation args)))
 
+(put #'tramp-autoload-file-name-handler 'tramp-autoload t)
+
 ;; `tramp-autoload-file-name-handler' must be registered before
 ;; evaluation of site-start and init files, because there might exist
 ;; remote files already, f.e. files kept via recentf-mode.
@@ -2691,6 +2693,7 @@ Falls back to normal file name handler if no Tramp file name handler exists."
 		     #'tramp-autoload-file-name-handler))
   (put #'tramp-autoload-file-name-handler 'safe-magic t)))
 
+(put #'tramp-register-autoload-file-name-handlers 'tramp-autoload t)
 ;;;###autoload (tramp-register-autoload-file-name-handlers)
 
 (defun tramp-use-absolute-autoload-file-names ()
@@ -2803,6 +2806,7 @@ Add operations defined in `HANDLER-alist' to `tramp-file-name-handler'."
 	       (string-prefix-p "tramp-" (symbol-name (cdr fnh))))
       (setq file-name-handler-alist (delq fnh file-name-handler-alist))))))
 
+(put #'tramp-unload-file-name-handlers 'tramp-autoload t)
 (add-hook 'tramp-unload-hook #'tramp-unload-file-name-handlers)
 
 ;;; File name handler functions for completion mode:
@@ -5888,6 +5892,8 @@ BODY is the backend specific code."
   (interactive)
   ;; Maybe it's not loaded yet.
   (ignore-errors (unload-feature 'tramp 'force))))
+
+(put #'tramp-unload-tramp 'tramp-autoload t)
 
 (provide 'tramp)
 
