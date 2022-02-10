@@ -5336,7 +5336,8 @@ be granted."
         (offset (cond
                  ((eq ?r access) 1)
                  ((eq ?w access) 2)
-                 ((eq ?x access) 3))))
+                 ((eq ?x access) 3)
+                 ((eq ?s access) 3))))
     (dolist (suffix '("string" "integer") result)
       (setq
        result
@@ -5369,13 +5370,15 @@ be granted."
             (and
              (eq access
 		 (aref (tramp-compat-file-attribute-modes file-attr) offset))
-	     (or (equal remote-uid
+	     (or (equal remote-uid unknown-id)
+		 (equal remote-uid
 			(tramp-compat-file-attribute-user-id file-attr))
 		 (equal unknown-id
 			(tramp-compat-file-attribute-user-id file-attr))))
             ;; Group accessible and owned by user's principal group.
             (and
              (eq access
+		 (equal remote-gid unknown-id)
 		 (aref (tramp-compat-file-attribute-modes file-attr)
 		       (+ offset 3)))
              (or (equal remote-gid
