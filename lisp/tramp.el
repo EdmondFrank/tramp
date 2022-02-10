@@ -5378,10 +5378,10 @@ be granted."
             ;; Group accessible and owned by user's principal group.
             (and
              (eq access
-		 (equal remote-gid unknown-id)
 		 (aref (tramp-compat-file-attribute-modes file-attr)
 		       (+ offset 3)))
-             (or (equal remote-gid
+             (or (equal remote-gid unknown-id)
+		 (equal remote-gid
 			(tramp-compat-file-attribute-group-id file-attr))
 		 (equal unknown-id
 			(tramp-compat-file-attribute-group-id
