@@ -1160,10 +1160,9 @@ file names."
 	       (tramp-get-connection-property v "default-location" "~")
 	       nil t localname 1)))
       ;; Tilde expansion is not possible.
-      (when (string-match-p "\\`\\(~[^/]*\\)\\(.*\\)\\'" localname)
-	(tramp-error
-	 v 'file-error
-	 "Cannot expand tilde in file `%s'" name))
+      (when (and (not tramp-tolerate-tilde)
+		 (string-match-p "\\`\\(~[^/]*\\)\\(.*\\)\\'" localname))
+	(tramp-error v 'file-error "Cannot expand tilde in file `%s'" name))
       (unless (tramp-run-real-handler #'file-name-absolute-p (list localname))
 	(setq localname (concat "/" localname)))
       ;; We do not pass "/..".
@@ -1181,7 +1180,9 @@ file names."
       ;; No tilde characters in file name, do normal
       ;; `expand-file-name' (this does "/./" and "/../").
       (tramp-make-tramp-file-name
-       v (tramp-run-real-handler #'expand-file-name (list localname))))))
+       v (if (string-match-p "\\`\\(~[^/]*\\)\\(.*\\)\\'" localname)
+	     localname
+	   (tramp-run-real-handler #'expand-file-name (list localname)))))))
 
 (defun tramp-gvfs-get-directory-attributes (directory)
   "Return GVFS attributes association list of all files in DIRECTORY."
