@@ -1409,8 +1409,11 @@ calling HANDLER.")
 ;; internal data structure.  Convenience functions for internal
 ;; data structure.
 
-;; The basic structure for remote file names.  We use a list :type,
-;; in order to be compatible with Emacs 25.
+;; The basic structure for remote file names.  We use a list :type, in
+;; order to be compatible with Emacs 25.  We must autoload it in
+;; tramp-loaddefs.el, because some functions, which need it, wouldn't
+;; work otherwise when unloading / reloading Tramp.  (Bug#50869)
+;;;###tramp-autoload
 (cl-defstruct (tramp-file-name (:type list) :named)
   method user domain host port localname hop)
 
