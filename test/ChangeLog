@@ -1,3 +1,7 @@
+2022-03-17  Michael Albinus  <michael.albinus@gmx.de>
+
+	* tramp-tests.el (tramp-test46-unload): Do not skip.  Test reload.
+
 2022-03-09  Lars Ingebrigtsen  <larsi@gnus.org>
 
 	* tramp-tests.el (tramp-test44-asynchronous-requests):

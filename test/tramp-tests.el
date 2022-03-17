@@ -7308,7 +7308,6 @@ process sentinels.  They shall not disturb each other."
   "Check that Tramp and its subpackages unload completely.
 Since it unloads Tramp, it shall be the last test to run."
   :tags '(:expensive-test)
-  (skip-unless noninteractive)
   ;; The autoloaded Tramp objects are different since Emacs 26.1.  We
   ;; cannot test older Emacsen, therefore.
   (skip-unless (tramp--test-emacs26-p))
@@ -7378,7 +7377,13 @@ Since it unloads Tramp, it shall be the last test to run."
 	     (and (string-match-p "^tramp" (symbol-name fun))
 		  (ert-fail
 		   (format "Function `%s' still contains Tramp advice" x))))
-	   x)))))
+	   x))))
+
+  ;; Reload.
+  (require 'tramp)
+  (require 'tramp-archive)
+  (should (featurep 'tramp))
+  (should (featurep 'tramp-archive)))
 
 (defun tramp-test-all (&optional interactive)
   "Run all tests for \\[tramp].
