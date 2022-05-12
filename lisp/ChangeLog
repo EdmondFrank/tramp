@@ -1,3 +1,9 @@
+2022-05-12  Michael Albinus  <michael.albinus@gmx.de>
+
+	* tramp-sh.el (tramp-ssh-controlmaster-options): Adapt docstring.
+	Do not quote ControlPath.  Reported by Daniel Kessler
+	<kesslerd@umich.edu>.
+
 2022-05-08  Michael Albinus  <michael.albinus@gmx.de>
 
 	* tramp.el (tramp-methods): Adapt docstring.
