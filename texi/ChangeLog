@@ -1,3 +1,8 @@
+2022-06-17  Stefan Kangas  <stefan@marxist.se>
+
+	* tramp.texi (Frequently Asked Questions): Delete reference to
+	obsolete library complete.el.
+
 2022-05-30  Michael Albinus  <michael.albinus@gmx.de>
 
 	Version 2.5.2.5 released.
