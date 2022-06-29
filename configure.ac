@@ -22,11 +22,11 @@
 
 # I've tested it with 2.52.  According to the Changelog of Autoconf,
 # incompatible changes (with quotation) have appeared since 2.50.
-AC_PREREQ([2.50])
+AC_PREREQ([2.71])
 
 # Initialize configure script.  This is the only place Tramp revision
 # needs to be set.
-AC_INIT([Tramp], [2.5.3-pre], [tramp-devel@gnu.org], , [https://www.gnu.org/software/tramp/])
+AC_INIT([Tramp],[2.5.3],[tramp-devel@gnu.org],[],[https://www.gnu.org/software/tramp/])
 AC_MSG_NOTICE([$PACKAGE_STRING])
 
 # Declare required Emacs version.  This is the only place Emacs
