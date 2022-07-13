@@ -2,6 +2,9 @@
 
 	* tramp.el (tramp-verbose): Fix docstring.
 
+	* trampver.el.in (customize-package-emacs-version-alist):
+	Add Tramp version integrated in Emacs 28.2.
+
 2022-06-29  Michael Albinus  <michael.albinus@gmx.de>
 
 	Version 2.5.3 released.
