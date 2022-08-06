@@ -257,6 +257,7 @@ pair of the form (KEY VALUE).  The following KEYs are defined:
       argument if it is supported.
     - \"%y\" is replaced by the `tramp-scp-force-scp-protocol'
       argument if it is supported.
+    - \"%d\" is replaced by the device detected by `tramp-adb-get-device'.
 
     The existence of `tramp-login-args', combined with the
     absence of `tramp-copy-args', is an indication that the
@@ -4244,6 +4245,8 @@ substitution.  SPEC-LIST is a list of char/value pairs used for
 	  ;; is different between tramp-sh.el, and tramp-adb.el or
 	  ;; tramp-sshfs.el.
 	  (let* ((sh-file-name-handler-p (tramp-sh-file-name-handler-p v))
+		 (adb-file-name-handler-p
+		  (tramp-adb-file-name-p (tramp-make-tramp-file-name v)))
 		 (login-program
 		  (tramp-get-method-parameter v 'tramp-login-program))
 		 ;; We don't create the temporary file.  In fact, it
@@ -4263,6 +4266,10 @@ substitution.  SPEC-LIST is a list of char/value pairs used for
 		  (when sh-file-name-handler-p
 		    (tramp-compat-funcall
 		     'tramp-ssh-controlmaster-options v)))
+		 (device
+		  (when adb-file-name-handler-p
+		    (tramp-compat-funcall
+		     'tramp-adb-get-device v)))
 		 login-args p)
 
 	    ;; Replace `login-args' place holders.  Split
@@ -4279,7 +4286,7 @@ substitution.  SPEC-LIST is a list of char/value pairs used for
 		 v 'tramp-login-args
 		 ?h (or host "") ?u (or user "") ?p (or port "")
 		 ?c (format-spec (or options "") (format-spec-make ?t tmpfile))
-		 ?l ""))))
+		 ?d (or device "") ?l ""))))
 	     p (make-process
 		:name name :buffer buffer
 		:command (append `(,login-program) login-args command)
