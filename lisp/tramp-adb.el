@@ -256,7 +256,7 @@ arguments to pass to the OPERATION."
 	  v localname (format "file-attributes-%s" id-format)
 	(and
 	 (tramp-adb-send-command-and-check
-	  v (format "%s -d -l %s"
+	  v (format "%s -d -l %s | cat"
 		    (tramp-adb-get-ls-command v)
 		    (tramp-shell-quote-argument localname)))
 	 (with-current-buffer (tramp-get-buffer v)
@@ -315,7 +315,7 @@ arguments to pass to the OPERATION."
 			       full match id-format nosort count)
 	 (with-current-buffer (tramp-get-buffer v)
 	   (when (tramp-adb-send-command-and-check
-		  v (format "%s -a -l %s"
+		  v (format "%s -a -l %s | cat"
 			    (tramp-adb-get-ls-command v)
 			    (tramp-shell-quote-argument localname)))
 	     ;; We insert also filename/. and filename/.., because "ls" doesn't.
@@ -323,7 +323,7 @@ arguments to pass to the OPERATION."
 	     (unless (re-search-backward "\\.$" nil t)
 	       (narrow-to-region (point-max) (point-max))
 	       (tramp-adb-send-command
-		v (format "%s -d -a -l %s %s"
+		v (format "%s -d -a -l %s %s | cat"
 			  (tramp-adb-get-ls-command v)
 			  (tramp-shell-quote-argument
 			   (tramp-compat-file-name-concat localname "."))
@@ -387,10 +387,6 @@ arguments to pass to the OPERATION."
 Android's \"ls\" command doesn't insert size column for directories:
 Emacs dired can't find files."
   (save-excursion
-    ;; Fix file names with spaces.
-    ;; FIXME: It would be better if we could call "ls" with proper
-    ;; argument or environment variable.
-    (replace-string-in-region "\\ " " " (point-min))
     ;; Insert missing size.
     (goto-char (point-min))
     (while
@@ -483,7 +479,7 @@ Emacs dired can't find files."
    (with-parsed-tramp-file-name (expand-file-name directory) nil
      (with-tramp-file-property v localname "file-name-all-completions"
        (tramp-adb-send-command
-	v (format "%s -a %s"
+	v (format "%s -a %s | cat"
 		  (tramp-adb-get-ls-command v)
 		  (tramp-shell-quote-argument localname)))
        (mapcar
