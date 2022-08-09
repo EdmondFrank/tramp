@@ -318,8 +318,8 @@ arguments to pass to the OPERATION."
 		  v (format "%s -a -l %s | cat"
 			    (tramp-adb-get-ls-command v)
 			    (tramp-shell-quote-argument localname)))
-	     ;; We insert also filename/. and filename/.., because "ls" doesn't.
-	     ;; Looks like it does include them in toybox, since Android 6.
+	     ;; We insert also filename/. and filename/.., because
+	     ;; "ls" doesn't on some file systems, like "sdcard".
 	     (unless (re-search-backward "\\.$" nil t)
 	       (narrow-to-region (point-max) (point-max))
 	       (tramp-adb-send-command
@@ -490,9 +490,8 @@ Emacs dired can't find files."
 	(with-current-buffer (tramp-get-buffer v)
 	  (delete-dups
 	   (append
-	    ;; In older Android versions, "." and ".." are not
-	    ;; included.  In newer versions (toybox, since Android 6)
-	    ;; they are.  We fix this by `delete-dups'.
+	    ;; On some file systems like "sdcard", "." and ".." are
+	    ;; not included.  We fix this by `delete-dups'.
 	    '("." "..")
 	    (delq
 	     nil
