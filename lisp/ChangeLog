@@ -1,3 +1,8 @@
+2022-09-18  Michael Albinus  <michael.albinus@gmx.de>
+
+	* tramp-integration.el (tramp-eshell-directory-change):
+	Respect local `default-directory'.  (Bug#57556)
+
 2022-08-30  Michael Albinus  <michael.albinus@gmx.de>
 
 	Version 2.5.3.2 released.
