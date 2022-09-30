@@ -1,3 +1,8 @@
+2022-09-30  Michael Albinus  <michael.albinus@gmx.de>
+
+	* tramp.el (tramp-get-remote-tmpdir): Remove obsolete connection
+	property "tmpdir".  (Bug#57800)
+
 2022-09-29  Michael Albinus  <michael.albinus@gmx.de>
 
 	Version 2.5.3.3 released.
