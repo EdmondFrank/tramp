@@ -1,3 +1,13 @@
+2022-12-20  Michael Albinus  <michael.albinus@gmx.de>
+
+	* tramp-archive-tests.el (tramp-archive-test47-auto-load)
+	(tramp-archive-test47-delay-load): Rename.
+
+	* tramp-tests.el (tramp-test47-threads): Remove.
+	(tramp-test47-auto-load, tramp-test47-delay-load)
+	(tramp-test47-recursive-load, tramp-test47-remote-load-path)
+	(tramp-test48-unload): Rename.
+
 2022-12-01  Stefan Kangas  <stefankangas@gmail.com>
 
 	Fix typos (don't abbreviate "with" or "without")
