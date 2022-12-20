@@ -137,32 +137,6 @@ NAME is unquoted."
 (defconst tramp-compat-use-url-tramp-p (fboundp 'temporary-file-directory)
   "Whether to use url-tramp.el.")
 
-;; Threads have entered Emacs 26.1, `main-thread' in Emacs 27.1.  But
-;; then, they might not exist when Emacs is configured
-;; --without-threads.
-(defconst tramp-compat-main-thread (bound-and-true-p main-thread)
-  "The main thread of Emacs, if compiled --with-threads.")
-
-(defsubst tramp-compat-current-thread ()
-  "The current thread, or nil if compiled --without-threads."
-  (tramp-compat-funcall 'current-thread))
-
-(defsubst tramp-compat-thread-yield ()
-  "Yield the CPU to another thread."
-  (tramp-compat-funcall 'thread-yield))
-
-(defsubst tramp-compat-make-mutex (name)
-  "Create a mutex."
-  (tramp-compat-funcall 'make-mutex name))
-
-(defmacro tramp-compat-with-mutex (mutex &rest body)
-  "Invoke BODY with MUTEX held, releasing MUTEX when done.
-This is the simplest safe way to acquire and release a mutex."
-  (declare (indent 1) (debug t))
-  `(if (mutexp ,mutex)
-       (with-mutex ,mutex ,@body)
-     ,@body))
-
 ;; `exec-path' is new in Emacs 27.1.
 (defalias 'tramp-compat-exec-path
   (if (fboundp 'exec-path)

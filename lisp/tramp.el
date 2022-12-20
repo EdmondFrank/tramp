@@ -2115,10 +2115,6 @@ ARGUMENTS to actually emit the message (if applicable)."
 	  (insert "\n"))
 	;; Timestamp.
 	(insert (format-time-string "%T.%6N "))
-	;; Threads.
-	(unless (or (null tramp-compat-main-thread)
-		    (eq (tramp-compat-current-thread) tramp-compat-main-thread))
-	  (insert (format "%s " (tramp-compat-current-thread))))
 	;; Calling Tramp function.  We suppress compat and trace
 	;; functions from being displayed.
 	(let ((btn 1) btf fn)
@@ -2698,23 +2694,11 @@ Must be handled by the callers."
 		res (cdr elt))))
       res)))
 
-(defvar tramp-mutex (tramp-compat-make-mutex "tramp")
-  "Global mutex for Tramp threads.")
-
-(defun tramp-get-mutex (vec)
-  "Return the mutex locking Tramp threads for VEC."
-  (if-let ((p (and (tramp-connectable-p vec)
-		   (tramp-get-connection-process vec))))
-      (with-tramp-connection-property p "mutex"
-	(tramp-compat-make-mutex (process-name p)))
-    tramp-mutex))
-
 ;; Main function.
 ;;;###autoload
 (defun tramp-file-name-handler (operation &rest args)
   "Invoke Tramp file name handler for OPERATION and ARGS.
-Fall back to normal file name handler if no Tramp file name handler exists.
-If Emacs is compiled --with-threads, the body is protected by a mutex."
+Fall back to normal file name handler if no Tramp file name handler exists."
   (let ((filename (apply #'tramp-file-name-for-operation operation args))
 	;; `file-remote-p' is called for everything, even for symbolic
 	;; links which look remote.  We don't want to get an error.
@@ -2723,95 +2707,79 @@ If Emacs is compiled --with-threads, the body is protected by a mutex."
 	(save-match-data
           (setq filename (tramp-replace-environment-variables filename))
           (with-parsed-tramp-file-name filename nil
-	    ;; Give other threads a chance.
-	    (tramp-compat-thread-yield)
-	    ;; The mutex allows concurrent run of operations.  It
-	    ;; guarantees, that the threads are not mixed.
-	    (tramp-compat-with-mutex (tramp-get-mutex v)
-	      ;; Run only when Emacs is idle.
-	      (tramp-compat-funcall 'check-idle-thread)
-	      (let ((current-connection tramp-current-connection)
-		    (foreign (tramp-find-foreign-file-name-handler v operation))
-		    (signal-hook-function #'tramp-signal-hook-function)
-		    result)
-		;; Set `tramp-current-connection'.
-		(unless
-		    (tramp-file-name-equal-p v (car tramp-current-connection))
-		  (setq tramp-current-connection (list v)))
+            (let ((current-connection tramp-current-connection)
+		  (foreign
+		   (tramp-find-foreign-file-name-handler v operation))
+		  (signal-hook-function #'tramp-signal-hook-function)
+		  result)
+	      ;; Set `tramp-current-connection'.
+	      (unless
+		  (tramp-file-name-equal-p v (car tramp-current-connection))
+		(setq tramp-current-connection (list v)))
 
-		;; Call the backend function.
-		(unwind-protect
-		    (if foreign
-			(let ((sf (symbol-function foreign))
-			      p)
-			  ;; Some packages set the default directory
-			  ;; to a remote path, before respective Tramp
-			  ;; packages are already loaded.  This
-			  ;; results in recursive loading.  Therefore,
-			  ;; we load the Tramp packages locally.
-			  (when (autoloadp sf)
-                            ;; FIXME: Not clear why we need these bindings here.
-                            ;; The explanation above is not convincing and
-                            ;; the bug#9114 for which it was added doesn't
-                            ;; clarify the core of the problem.
-			    (let ((default-directory
-				    tramp-compat-temporary-file-directory)
-				  file-name-handler-alist)
-			      (autoload-do-load sf foreign)))
-			  ;; (tramp-message
-			  ;;  v 4 "Running `%s'..." (cons operation args))
-			  ;; Switch process thread.
-			  (when (and tramp-mutex
-				     (tramp-connectable-p v)
-				     (setq p (tramp-get-connection-process v)))
-			    (tramp-compat-funcall
-			     'set-process-thread
-			     p (tramp-compat-current-thread)))
-			  ;; If `non-essential' is non-nil, Tramp
-			  ;; shall not open a new connection.
-			  ;; If Tramp detects that it shouldn't
-			  ;; continue to work, it throws the
-			  ;; `suppress' event.  This could happen for
-			  ;; example, when Tramp tries to open the
-			  ;; same connection twice in a short time
-			  ;; frame.
-			  ;; In both cases, we try the default handler
-			  ;; then.
-			  (setq result
-				(catch 'non-essential
-				  (catch 'suppress
-				    (apply foreign operation args))))
-			  ;; (tramp-message
-			  ;;  v 4 "Running `%s'...`%s'"
-			  ;;  (cons operation args) result)
-			  (cond
-			   ((eq result 'non-essential)
+	      ;; Call the backend function.
+	      (unwind-protect
+	          (if foreign
+		      (let ((sf (symbol-function foreign)))
+		        ;; Some packages set the default directory to
+		        ;; a remote path, before respective Tramp
+		        ;; packages are already loaded.  This results
+		        ;; in recursive loading.  Therefore, we load
+		        ;; the Tramp packages locally.
+		        (when (autoloadp sf)
+                          ;; FIXME: Not clear why we need these bindings here.
+                          ;; The explanation above is not convincing and
+                          ;; the bug#9114 for which it was added doesn't
+                          ;; clarify the core of the problem.
+			  (let ((default-directory
+                                  tramp-compat-temporary-file-directory)
+			        file-name-handler-alist)
+			    (autoload-do-load sf foreign)))
+                        ;; (tramp-message
+                        ;;  v 4 "Running `%s'..." (cons operation args))
+                        ;; If `non-essential' is non-nil, Tramp shall
+		        ;; not open a new connection.
+		        ;; If Tramp detects that it shouldn't continue
+		        ;; to work, it throws the `suppress' event.
+		        ;; This could happen for example, when Tramp
+		        ;; tries to open the same connection twice in
+		        ;; a short time frame.
+		        ;; In both cases, we try the default handler then.
+		        (setq result
+			      (catch 'non-essential
+			        (catch 'suppress
+				  (apply foreign operation args))))
+                        ;; (tramp-message
+                        ;;  v 4 "Running `%s'...`%s'" (cons operation args) result)
+		        (cond
+		         ((eq result 'non-essential)
+			  (tramp-message
+			   v 5 "Non-essential received in operation %s"
+			   (cons operation args))
+			  (let ((tramp-verbose 10)) (tramp-backtrace v))
+			  (tramp-run-real-handler operation args))
+		         ((eq result 'suppress)
+			  (let ((inhibit-message t))
 			    (tramp-message
-			     v 5 "Non-essential received in operation %s"
+			     v 1 "Suppress received in operation %s"
 			     (cons operation args))
-			    (tramp-run-real-handler operation args))
-			   ((eq result 'suppress)
-			    (let ((inhibit-message t))
-			      (tramp-message
-			       v 1 "Suppress received in operation %s"
-			       (cons operation args))
-			      (tramp-cleanup-connection v t)
-			      (tramp-run-real-handler operation args)))
-			   (t result)))
+			    (tramp-cleanup-connection v t)
+			    (tramp-run-real-handler operation args)))
+		         (t result)))
 
-		      ;; Nothing to do for us.  However, since we are
-		      ;; in `tramp-mode', we must suppress the volume
-		      ;; letter on MS Windows.
-		      (setq result (tramp-run-real-handler operation args))
-		      (if (stringp result)
-			  (tramp-drop-volume-letter result)
-			result))
+		    ;; Nothing to do for us.  However, since we are in
+		    ;; `tramp-mode', we must suppress the volume
+		    ;; letter on MS Windows.
+		    (setq result (tramp-run-real-handler operation args))
+		    (if (stringp result)
+		        (tramp-drop-volume-letter result)
+		      result))
 
-		  ;; Reset `tramp-current-connection'.
-		  (unless
-		      (tramp-file-name-equal-p
-		       (car current-connection) (car tramp-current-connection))
-		    (setq tramp-current-connection current-connection)))))))
+		;; Reset `tramp-current-connection'.
+		(unless
+		    (tramp-file-name-equal-p
+		     (car current-connection) (car tramp-current-connection))
+		  (setq tramp-current-connection current-connection))))))
 
       ;; When `tramp-mode' is not enabled, or the file name is quoted,
       ;; we don't do anything.
