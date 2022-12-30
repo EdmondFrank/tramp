@@ -1,3 +1,9 @@
+2022-12-30  Michael Albinus  <michael.albinus@gmx.de>
+
+	Version 2.6.0 released.
+
+	* tramp-tests.el (tramp-test32-shell-command): Fix test.
+
 2022-12-20  Michael Albinus  <michael.albinus@gmx.de>
 
 	* tramp-archive-tests.el (tramp-archive-test47-auto-load)
