@@ -487,9 +487,9 @@ arguments to pass to the OPERATION."
 		       (args      (list (concat "//" host "/" share) "-E"))
 		       (options   tramp-smb-options))
 
-		  (if (not (zerop (length user)))
-		      (setq args (append args (list "-U" user)))
-		    (setq args (append args (list "-N"))))
+		  (if (tramp-string-empty-or-nil-p user)
+		      (setq args (append args (list "-N")))
+		    (setq args (append args (list "-U" user))))
 
 		  (when domain (setq args (append args (list "-W" domain))))
 		  (when port   (setq args (append args (list "-p" port))))
@@ -719,7 +719,8 @@ PRESERVE-UID-GID and PRESERVE-EXTENDED-ATTRIBUTES are completely ignored."
   ;; If DIR is not given, use DEFAULT-DIRECTORY or "/".
   (setq dir (or dir default-directory "/"))
   ;; Handle empty NAME.
-  (when (zerop (length name)) (setq name "."))
+  (when (string-empty-p name)
+    (setq name "."))
   ;; Unless NAME is absolute, concat DIR and NAME.
   (unless (file-name-absolute-p name)
     (setq name (tramp-compat-file-name-concat dir name)))
@@ -735,7 +736,7 @@ PRESERVE-UID-GID and PRESERVE-EXTENDED-ATTRIBUTES are completely ignored."
 	(let ((uname (match-string 1 localname))
 	      (fname (match-string 2 localname))
 	      hname)
-	  (when (zerop (length uname))
+	  (when (tramp-string-empty-or-nil-p uname)
 	    (setq uname user))
 	  (when (setq hname (tramp-get-home-directory v uname))
 	    (setq localname (concat hname fname)))))
@@ -789,9 +790,9 @@ PRESERVE-UID-GID and PRESERVE-EXTENDED-ATTRIBUTES are completely ignored."
 		 (args      (list (concat "//" host "/" share) "-E"))
 		 (options   tramp-smb-options))
 
-	    (if (not (zerop (length user)))
-		(setq args (append args (list "-U" user)))
-	      (setq args (append args (list "-N"))))
+	    (if (tramp-string-empty-or-nil-p user)
+		(setq args (append args (list "-N")))
+	      (setq args (append args (list "-U" user))))
 
 	    (when domain (setq args (append args (list "-W" domain))))
 	    (when port   (setq args (append args (list "-p" port))))
@@ -1079,7 +1080,7 @@ PRESERVE-UID-GID and PRESERVE-EXTENDED-ATTRIBUTES are completely ignored."
 	  (setq entries
 		(delq
 		 nil
-		 (if (or wildcard (zerop (length base)))
+		 (if (or wildcard (string-empty-p base))
 		     ;; Check for matching entries.
 		     (mapcar
 		      (lambda (x)
@@ -1105,7 +1106,7 @@ PRESERVE-UID-GID and PRESERVE-EXTENDED-ATTRIBUTES are completely ignored."
 	  (when (tramp-compat-string-search "F" switches)
 	    (mapc
 	     (lambda (x)
-	       (unless (zerop (length (car x)))
+	       (unless (string-empty-p (car x))
 		 (cond
 		  ((char-equal ?d (string-to-char (nth 1 x)))
 		   (setcar x (concat (car x) "/")))
@@ -1125,7 +1126,7 @@ PRESERVE-UID-GID and PRESERVE-EXTENDED-ATTRIBUTES are completely ignored."
 	  ;; Print entries.
 	  (mapc
 	   (lambda (x)
-	     (unless (zerop (length (nth 0 x)))
+	     (unless (string-empty-p (nth 0 x))
 	       (let ((attr
 		      (when (tramp-smb-get-stat-capability v)
 			(ignore-errors
@@ -1455,9 +1456,9 @@ component is used as the target of the symlink."
 				 "\n" "," acl-string)))
 	       (options   tramp-smb-options))
 
-	  (if (not (zerop (length user)))
-	      (setq args (append args (list "-U" user)))
-	    (setq args (append args (list "-N"))))
+	  (if (tramp-string-empty-or-nil-p user)
+	      (setq args (append args (list "-N")))
+	    (setq args (append args (list "-U" user))))
 
 	  (when domain (setq args (append args (list "-W" domain))))
 	  (when port   (setq args (append args (list "-p" port))))
@@ -1607,7 +1608,7 @@ If USER is a string, return its home directory instead of the
 user identified by VEC.  If there is no user specified in either
 VEC or USER, or if there is no home directory, return nil."
   (let ((user (or user (tramp-file-name-user vec))))
-    (unless (zerop (length user))
+    (unless (tramp-string-empty-or-nil-p user)
       (concat "/" user))))
 
 (defun tramp-smb-handle-write-region
@@ -2009,9 +2010,9 @@ If ARGUMENT is non-nil, use it as argument for
 	   (t
 	    (setq args (list "-g" "-L" host ))))
 
-	  (if (not (zerop (length user)))
-	      (setq args (append args (list "-U" user)))
-	    (setq args (append args (list "-N"))))
+	  (if (tramp-string-empty-or-nil-p user)
+	      (setq args (append args (list "-N")))
+	    (setq args (append args (list "-U" user))))
 
 	  (when domain (setq args (append args (list "-W" domain))))
 	  (when port   (setq args (append args (list "-p" port))))
@@ -2026,7 +2027,8 @@ If ARGUMENT is non-nil, use it as argument for
 	  (with-tramp-progress-reporter
 	      vec 3
 	      (format "Opening connection for //%s%s/%s"
-		      (if (not (zerop (length user))) (concat user "@") "")
+		      (if (tramp-string-empty-or-nil-p user)
+			  "" (concat user "@"))
 		      host (or share ""))
 
 	    (let* (coding-system-for-read
