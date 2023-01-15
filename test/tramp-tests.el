@@ -4515,17 +4515,17 @@ This tests also `make-symbolic-link', `file-truename' and `add-name-to-file'."
 		  (and (string-match-p tramp-ipv6-regexp host)
 		       tramp-postfix-ipv6-format)))
               ;; Complete method name.
-	      (unless (or (zerop (length method))
-                          (zerop (length tramp-method-regexp)))
+	      (unless (or (tramp-string-empty-or-nil-p method)
+                          (string-empty-p tramp-method-regexp))
 	        (should
 	         (member
 		  (concat prefix-format method tramp-postfix-method-format)
 		  (file-name-all-completions
                    (concat prefix-format (substring method 0 1)) "/"))))
               ;; Complete host name.
-	      (unless (or (zerop (length method))
-                          (zerop (length tramp-method-regexp))
-                          (zerop (length host))
+	      (unless (or (tramp-string-empty-or-nil-p method)
+                          (string-empty-p tramp-method-regexp)
+                          (tramp-string-empty-or-nil-p host)
 			  (tramp--test-gvfs-p method))
 	        (should
 	         (member
@@ -5399,7 +5399,7 @@ If UNSTABLE is non-nil, the test is tagged as `:unstable'."
   (when-let ((default-directory ert-remote-temporary-file-directory)
              (mi (memory-info)))
     (should (consp mi))
-    (should (= (length mi) 4))
+    (should (tramp-compat-length= mi 4))
     (dotimes (i (length mi))
       (should (natnump (nth i mi))))))
 
@@ -5978,7 +5978,8 @@ INPUT, if non-nil, is a string sent to the process."
           ;; We make a super long `tramp-remote-path'.
           (make-directory tmp-name)
           (should (file-directory-p tmp-name))
-          (while (< (length (mapconcat #'identity orig-exec-path ":")) 5000)
+          (while (tramp-compat-length<
+		  (mapconcat #'identity orig-exec-path ":") 5000)
             (let ((dir (make-temp-file (file-name-as-directory tmp-name) 'dir)))
               (should (file-directory-p dir))
               (setq tramp-remote-path
@@ -5994,9 +5995,10 @@ INPUT, if non-nil, is a string sent to the process."
           ;; Ignore trailing newline.
 	  (setq path (substring (shell-command-to-string "echo $PATH") nil -1))
 	  ;; The shell doesn't handle such long strings.
-	  (when (<= (length path)
-		    (tramp-get-connection-property
-		     tramp-test-vec "pipe-buf" 4096))
+	  (unless (tramp-compat-length>
+		   path
+		   (tramp-get-connection-property
+		    tramp-test-vec "pipe-buf" 4096))
 	    ;; The last element of `exec-path' is `exec-directory'.
             (should
 	     (string-equal
@@ -7156,7 +7158,7 @@ This requires restrictions of file name syntax."
   (when-let ((fsi (with-no-warnings
 		    (file-system-info ert-remote-temporary-file-directory))))
     (should (consp fsi))
-    (should (= (length fsi) 3))
+    (should (tramp-compat-length= fsi 3))
     (dotimes (i (length fsi))
       (should (natnump (or (nth i fsi) 0))))))
 
