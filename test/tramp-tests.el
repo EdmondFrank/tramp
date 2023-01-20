@@ -91,6 +91,9 @@
   ;; Suppress nasty messages.
   (fset #'shell-command-sentinel #'ignore)
   ;; We do not want to be interrupted.
+  (fset #'tramp-action-yesno
+	(lambda (_proc vec)
+	  (tramp-send-string vec (concat "yes" tramp-local-end-of-line)) t))
   (eval-after-load 'tramp-gvfs
     '(fset 'tramp-gvfs-handler-askquestion
 	   (lambda (_message _choices) '(t nil 0)))))
@@ -6832,6 +6835,9 @@ Use the \"ls\" command."
 	  ;; Use all available language specific snippets.
 	  (lambda (x)
 	    (and
+	     ;; The "Oriya" and "Odia" languages use some problematic
+	     ;; composition characters.
+	     (not (member (car x) '("Oriya" "Odia")))
 	     (stringp (setq x (eval (get-language-info (car x) 'sample-text))))
 	     ;; Filter out strings which use unencodable characters.
 	     (not (and (or (tramp--test-gvfs-p) (tramp--test-smb-p))
@@ -7350,6 +7356,11 @@ Since it unloads Tramp, it shall be the last test to run."
 	  (string-match-p "^tramp" (symbol-name x))
 	  ;; `tramp-completion-mode' is autoloaded in Emacs < 28.1.
 	  (not (eq 'tramp-completion-mode x))
+	  ;; `tramp-compat-rx' is autoloaded in Emacs 29.1.
+	  (not (eq 'tramp-compat-rx x))
+	  ;; `tramp-register-archive-autoload-file-name-handler' is
+	  ;; autoloaded since Emacs 29.1.
+	  (not (eq 'tramp-register-archive-autoload-file-name-handler x))
 	  (not (string-match-p "^tramp\\(-archive\\)?--?test" (symbol-name x)))
 	  (not (string-match-p "unload-hook$" (symbol-name x)))
 	  (not (get x 'tramp-autoload))
@@ -7386,11 +7397,13 @@ Since it unloads Tramp, it shall be the last test to run."
 		   (format "Function `%s' still contains Tramp advice" x))))
 	   x))))
 
-  ;; Reload.
-  (require 'tramp)
-  (require 'tramp-archive)
-  (should (featurep 'tramp))
-  (should (featurep 'tramp-archive)))
+  ;; Reload.  In Emacs 29+, there is an eager macro expansion of
+  ;; `tramp-compat-rx'.
+  (unless (>= emacs-major-version 29)
+    (require 'tramp)
+    (require 'tramp-archive)
+    (should (featurep 'tramp))
+    (should (featurep 'tramp-archive))))
 
 (defun tramp-test-all (&optional interactive)
   "Run all tests for \\[tramp].
