@@ -4694,7 +4694,7 @@ This tests also `make-symbolic-link', `file-truename' and `add-name-to-file'."
                               tramp-prefix-format
                               (substring-no-properties method 0 2))
                         unread-command-events
-                        (mapcar #'identity (concat test "\t\n"))
+                        (mapcar #'identity (concat test "\t\t\n"))
                         completions nil
                         result (read-file-name "Prompt: "))
                   (if (not (get-buffer "*Completions*"))
@@ -4707,6 +4707,12 @@ This tests also `make-symbolic-link', `file-truename' and `add-name-to-file'."
                           (concat tramp-prefix-format method-string)
                           result)))
                     (with-current-buffer "*Completions*"
+		      ;; We must remove leading `default-directory'.
+		      (goto-char (point-min))
+		      (let ((inhibit-read-only t))
+			(while (re-search-forward "//" nil 'noerror)
+			  (delete-region (line-beginning-position) (point))))
+		      (goto-char (point-min))
 	              (re-search-forward
                        (rx bol (1+ nonl) "possible completions:" eol))
 		      (forward-line 1)
@@ -4728,7 +4734,7 @@ This tests also `make-symbolic-link', `file-truename' and `add-name-to-file'."
                               tramp-prefix-format method-string
                               (substring-no-properties host 0 2))
                         unread-command-events
-                        (mapcar #'identity (concat test "\t\n"))
+                        (mapcar #'identity (concat test "\t\t\n"))
                         completions nil
                         result (read-file-name "Prompt: "))
                   (if (not (get-buffer "*Completions*"))
@@ -4743,6 +4749,12 @@ This tests also `make-symbolic-link', `file-truename' and `add-name-to-file'."
 	                   ipv6-prefix host ipv6-postfix tramp-postfix-host-format)
                           result)))
                     (with-current-buffer "*Completions*"
+		      ;; We must remove leading `default-directory'.
+		      (goto-char (point-min))
+		      (let ((inhibit-read-only t))
+			(while (re-search-forward "//" nil 'noerror)
+			  (delete-region (line-beginning-position) (point))))
+		      (goto-char (point-min))
 	              (re-search-forward
                        (rx bol (1+ nonl) "possible completions:" eol))
 		      (forward-line 1)
