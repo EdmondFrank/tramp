@@ -2982,12 +2982,14 @@ not in completion mode."
     (cond
      ((file-name-absolute-p filename) filename)
      ((and (eq tramp-syntax 'simplified)
-           (string-match-p (rx (regexp tramp-postfix-host-regexp) eos) dir))
+           (string-match-p
+	    (tramp-compat-rx (regexp tramp-postfix-host-regexp) eos) dir))
       (concat dir filename))
      ((string-match-p
-       (rx bos (regexp tramp-prefix-regexp)
-	   (? (regexp tramp-method-regexp) (regexp tramp-postfix-method-regexp))
-	   eos)
+       (tramp-compat-rx
+	bos (regexp tramp-prefix-regexp)
+	(? (regexp tramp-method-regexp) (regexp tramp-postfix-method-regexp))
+	eos)
        dir)
       (concat dir filename))
      (t (tramp-run-real-handler #'expand-file-name (list filename directory))))))
@@ -3006,7 +3008,7 @@ not in completion mode."
             ;; Is it a valid method?
             ((and (not (string-empty-p tramp-postfix-method-format))
                   (string-match
-	           (rx
+	           (tramp-compat-rx
 	            (regexp tramp-prefix-regexp)
 	            (group (regexp tramp-method-regexp))
 	            (? (regexp tramp-postfix-method-regexp))
@@ -3015,7 +3017,7 @@ not in completion mode."
              (assoc (match-string 1 filename) tramp-methods))
             ;; Is it a valid user@host?
             ((string-match
-	      (rx
+	      (tramp-compat-rx
                (regexp tramp-prefix-regexp)
                (group (regexp tramp-remote-file-name-spec-regexp))
                eos)
@@ -3275,17 +3277,19 @@ PARTIAL-USER must match USER, PARTIAL-HOST must match HOST."
   (cond
    ((and (not (string-empty-p tramp-method-regexp))
          (string-match
-          (rx (group
-	       (regexp tramp-prefix-regexp)
-               (group (regexp tramp-method-regexp))
-	       (regexp tramp-postfix-method-regexp)))
+          (tramp-compat-rx
+	   (group
+	    (regexp tramp-prefix-regexp)
+            (group (regexp tramp-method-regexp))
+	    (regexp tramp-postfix-method-regexp)))
           filename)
          ;; Is it a valid method?
          (assoc (match-string 2 filename) tramp-methods))
     (match-string 1 filename))
    ((string-match
-     (rx (group (regexp tramp-prefix-regexp))
-         (regexp tramp-completion-method-regexp) eos)
+     (tramp-compat-rx
+      (group (regexp tramp-prefix-regexp))
+      (regexp tramp-completion-method-regexp) eos)
      filename)
     (match-string 1 filename))
    (t (tramp-run-real-handler #'file-name-directory (list filename)))))
