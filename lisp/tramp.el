@@ -1220,9 +1220,12 @@ The `ftp' syntax does not support methods.")
      (? (regexp tramp-completion-method-regexp)
 	;; Method separator, user name and host name.
 	(? (regexp tramp-postfix-method-regexp)
-	   ;; This is a little bit lax, but it serves.
-	   (? (regexp tramp-host-regexp))))
-
+	   (? (regexp tramp-user-regexp)
+	      (regexp tramp-postfix-user-regexp))
+	   (? (| (regexp tramp-host-regexp) ;; This includes a user.
+                 (: (regexp tramp-prefix-ipv6-regexp)
+		    (? (regexp tramp-ipv6-regexp)
+		       (? (regexp tramp-postfix-ipv6-regexp))))))))
      eos)))
 
 (defvar tramp-completion-file-name-regexp
@@ -2988,7 +2991,8 @@ not in completion mode."
      ((string-match-p
        (tramp-compat-rx
 	bos (regexp tramp-prefix-regexp)
-	(? (regexp tramp-method-regexp) (regexp tramp-postfix-method-regexp))
+	(? (regexp tramp-method-regexp) (regexp tramp-postfix-method-regexp)
+	   (? (regexp tramp-user-regexp) (regexp tramp-postfix-user-regexp)))
 	eos)
        dir)
       (concat dir filename))
@@ -3281,10 +3285,20 @@ PARTIAL-USER must match USER, PARTIAL-HOST must match HOST."
 	   (group
 	    (regexp tramp-prefix-regexp)
             (group (regexp tramp-method-regexp))
-	    (regexp tramp-postfix-method-regexp)))
+	    (regexp tramp-postfix-method-regexp)
+	    (? (regexp tramp-user-regexp)
+	       (regexp tramp-postfix-user-regexp))))
           filename)
          ;; Is it a valid method?
          (assoc (match-string 2 filename) tramp-methods))
+    (match-string 1 filename))
+   ((and (string-empty-p tramp-method-regexp)
+         (string-match
+          (rx (group
+	       (regexp tramp-prefix-regexp)
+	       (? (regexp tramp-user-regexp)
+	          (regexp tramp-postfix-user-regexp))))
+          filename))
     (match-string 1 filename))
    ((string-match
      (tramp-compat-rx
