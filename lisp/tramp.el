@@ -3294,10 +3294,11 @@ PARTIAL-USER must match USER, PARTIAL-HOST must match HOST."
     (match-string 1 filename))
    ((and (string-empty-p tramp-method-regexp)
          (string-match
-          (rx (group
-	       (regexp tramp-prefix-regexp)
-	       (? (regexp tramp-user-regexp)
-	          (regexp tramp-postfix-user-regexp))))
+          (tramp-compat-rx
+	   (group
+	    (regexp tramp-prefix-regexp)
+	    (? (regexp tramp-user-regexp)
+	       (regexp tramp-postfix-user-regexp))))
           filename))
     (match-string 1 filename))
    ((string-match
