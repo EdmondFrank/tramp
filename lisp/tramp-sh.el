@@ -3097,8 +3097,7 @@ implementation will be used."
 			      ;; We must also disable buffering,
 			      ;; otherwise strings larger than 4096
 			      ;; bytes, sent by the process, could
-			      ;; block, see termios(3) and
-			      ;; <https://github.com/emacs-lsp/lsp-mode/issues/2375#issuecomment-1407272718>.
+			      ;; block, see termios(3) and Bug#61341.
 			      ;; FIXME: Shall we rather use "stty raw"?
 			      (if (tramp-check-remote-uname v "Darwin")
 				  (tramp-send-command
