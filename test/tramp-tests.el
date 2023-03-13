@@ -6014,6 +6014,8 @@ INPUT, if non-nil, is a string sent to the process."
 	 (enable-remote-dir-locals t)
          (inhibit-message t)
 	 kill-buffer-query-functions
+	 (clpa connection-local-profile-alist)
+	 (clca connection-local-criteria-alist)
 	 connection-local-profile-alist connection-local-criteria-alist)
     (unwind-protect
 	(progn
@@ -6062,6 +6064,9 @@ INPUT, if non-nil, is a string sent to the process."
 	    (kill-buffer (current-buffer))))
 
       ;; Cleanup.
+      (custom-set-variables
+       `(connection-local-profile-alist ',clpa now)
+       `(connection-local-criteria-alist ',clca now))
       (ignore-errors (delete-directory tmp-name1 'recursive)))))
 
 (ert-deftest tramp-test34-explicit-shell-file-name ()
@@ -6076,6 +6081,8 @@ INPUT, if non-nil, is a string sent to the process."
 
   (let ((default-directory ert-remote-temporary-file-directory)
 	explicit-shell-file-name kill-buffer-query-functions
+	(clpa connection-local-profile-alist)
+	(clca connection-local-criteria-alist)
 	connection-local-profile-alist connection-local-criteria-alist)
     (unwind-protect
 	(progn
@@ -6110,6 +6117,9 @@ INPUT, if non-nil, is a string sent to the process."
 
       ;; Cleanup.
       (put 'explicit-shell-file-name 'permanent-local nil)
+      (custom-set-variables
+       `(connection-local-profile-alist ',clpa now)
+       `(connection-local-criteria-alist ',clca now))
       (kill-buffer "*shell*"))))
 
 ;; `exec-path' was introduced in Emacs 27.1.  `executable-find' has
