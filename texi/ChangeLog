@@ -1,4 +1,9 @@
-2023-03-17  tefan Kangas  <stefankangas@gmail.com>
+2023-03-24  Michael Albinus  <michael.albinus@gmx.de>
+
+	* tramp.texi (Default Method): OpenSSH for MS Windows can be used.
+	(Ssh setup): Extend for MS Windows and ssh.
+
+2023-03-17  Stefan Kangas  <stefankangas@gmail.com>
 
 	* tramp.texi (GVFS-based methods): Improve indexing.
 
