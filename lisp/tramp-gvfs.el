@@ -1087,7 +1087,7 @@ file names."
 			(goto-char (point-min))
 			(tramp-error-with-buffer
 			 nil v 'file-error
-			 "%s failed, see buffer `%s' for details."
+			 "%s failed, see buffer `%s' for details"
 			 msg-operation (buffer-name)))
 
 		    ;; Some WebDAV server, like the one from QNAP, do

@@ -1164,8 +1164,8 @@ component is used as the target of the symlink."
 	(unless ln
 	  (tramp-error
 	   v 'file-error
-	   (concat "Making a symbolic link. "
-		   "ln(1) does not exist on the remote host.")))
+	   (concat "Making a symbolic link: "
+		   "ln(1) does not exist on the remote host")))
 
 	;; Do the 'confirm if exists' thing.
 	(when (file-exists-p linkname)
@@ -2217,7 +2217,7 @@ the uid and gid from FILENAME."
 		 cmd-result)
 	      (tramp-error-with-buffer
 	       nil v 'file-error
-	       "Copying directly failed, see buffer `%s' for details."
+	       "Copying directly failed, see buffer `%s' for details"
 	       (buffer-name)))))
 
 	 ;; We are on the local host.
