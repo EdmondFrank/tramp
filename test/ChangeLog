@@ -2,11 +2,6 @@
 
 	* Makefile.in (.PHONY, %.log): Add FORCE.
 
-2023-04-09  Michael Albinus  <michael.albinus@gmx.de>
-
-	* tramp-tests.el (tramp-test09-insert-file-contents): Adapt test.
-
->>>>>>> 26dd9cf4 (* Makefile.in (.PHONY, %.log): Add FORCE.)
 2023-04-03  Michael Albinus  <michael.albinus@gmx.de>
 
 	* tramp-tests.el (tramp-test38-find-backup-file-name):
