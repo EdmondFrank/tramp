@@ -1,3 +1,8 @@
+2023-05-15  Michael Albinus  <michael.albinus@gmx.de>
+
+	* tramp-tests.el (tramp-test44-asynchronous-requests): Mark as :unstable.
+	(tramp-test48-unload): Special case of `tramp-use-connection-share'.
+
 2023-04-29  Michael Albinus  <michael.albinus@gmx.de>
 
 	Version 2.6.0.4 released.
