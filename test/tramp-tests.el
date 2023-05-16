@@ -7877,9 +7877,6 @@ Since it unloads Tramp, it shall be the last test to run."
 	  ;; `tramp-register-archive-file-name-handler' is autoloaded
 	  ;; in Emacs < 29.1.
 	  (not (eq 'tramp-register-archive-file-name-handler x))
-	  ;; `tramp-use-connection-share' of Tramp 2.7 is autoloaded
-	  ;; in Emacs >= 30.1.
-	  (not (eq 'tramp-use-connection-share x))
 	  (not (string-match-p
 		(rx bol "tramp" (? "-archive") (** 1 2 "-") "test")
 		(symbol-name x)))
