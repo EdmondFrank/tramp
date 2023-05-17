@@ -1,3 +1,10 @@
+2023-05-17  Mattias Engdegård  <mattiase@acm.org>
+
+	Eliminate some mutation of program constants
+
+	* tramp.el (tramp-handle-memory-info): Work on newly created
+	objects, or use non-destructive operations.
+
 2023-06-25  Michael Albinus  <michael.albinus@gmx.de>
 
 	* tramp.el (tramp-get-buffer-string): Check, that BUFFER is really
@@ -98,6 +105,8 @@
 	(tramp-device-escape-sequence-regexp): Delete.
 	(tramp-sh-handle-insert-directory, tramp-barf-if-no-shell-prompt)
 	(tramp-wait-for-output): Use `ansi-color-control-seq-regexp'.
+=======
+>>>>>>> e5f945d4 (* tramp.el (tramp-handle-memory-info): Work on newly created)
 
 2023-05-15  Michael Albinus  <michael.albinus@gmx.de>
 
