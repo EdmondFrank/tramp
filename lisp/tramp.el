@@ -5625,11 +5625,13 @@ Wait, until the connection buffer changes."
 See `tramp-process-actions' for the format of ACTIONS."
   (let ((case-fold-search t)
 	(shell-prompt-pattern
-	 (rx (regexp shell-prompt-pattern)
-	     (? (regexp ansi-color-control-seq-regexp))))
+	 (tramp-compat-rx
+	  (regexp shell-prompt-pattern)
+	  (? (regexp ansi-color-control-seq-regexp))))
 	(tramp-shell-prompt-pattern
-	 (rx (regexp tramp-shell-prompt-pattern)
-	     (? (regexp ansi-color-control-seq-regexp))))
+	 (tramp-compat-rx
+	  (regexp tramp-shell-prompt-pattern)
+	  (? (regexp ansi-color-control-seq-regexp))))
 	tramp-process-action-regexp
 	found todo item pattern action)
     (while (not found)
@@ -5640,7 +5642,8 @@ See `tramp-process-actions' for the format of ACTIONS."
       (while todo
 	(setq item (pop todo)
 	      tramp-process-action-regexp (symbol-value (nth 0 item))
-	      pattern (rx (group (regexp tramp-process-action-regexp)) eos)
+	      pattern
+	      (tramp-compat-rx (group (regexp tramp-process-action-regexp)) eos)
 	      action (nth 1 item))
 	(tramp-message
 	 vec 5 "Looking for regexp \"%s\" from remote shell" pattern)
