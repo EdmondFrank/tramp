@@ -4724,7 +4724,7 @@ This tests also `make-symbolic-link', `file-truename' and `add-name-to-file'."
                              tramp-prefix-format hop
                              (substring-no-properties
 			      method 0 (min 2 (length method))))
-			   ,(concat tramp-prefix-format method-string)
+			   ,(concat tramp-prefix-format hop method-string)
 			   ,method-string)))
 		      ;; Complete user name.
 		      (unless (tramp-string-empty-or-nil-p user)
@@ -4733,7 +4733,7 @@ This tests also `make-symbolic-link', `file-truename' and `add-name-to-file'."
                              (substring-no-properties
 			      user 0 (min 2 (length user))))
 			   ,(concat
-                             tramp-prefix-format method-string user-string)
+                             tramp-prefix-format hop method-string user-string)
 			   ,user-string)))
 		      ;; Complete host name.
 		      (unless (tramp-string-empty-or-nil-p host)
@@ -4743,9 +4743,9 @@ This tests also `make-symbolic-link', `file-truename' and `add-name-to-file'."
 			     (substring-no-properties
 			      host 0 (min 2 (length host))))
 			   (,(concat
-			      tramp-prefix-format method-string host-string)
+			      tramp-prefix-format hop method-string host-string)
 			    ,(concat
-			      tramp-prefix-format method-string
+			      tramp-prefix-format hop method-string
 			      user-string host-string))
 			   ,host-string)))
 		      ;; Complete user and host name.
@@ -4757,7 +4757,7 @@ This tests also `make-symbolic-link', `file-truename' and `add-name-to-file'."
 			     (substring-no-properties
 			      host 0 (min 2 (length host))))
 			   ,(concat
-                             tramp-prefix-format method-string
+                             tramp-prefix-format hop method-string
 	                     user-string host-string)
 			   ,host-string)))))
 
