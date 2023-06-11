@@ -2524,7 +2524,7 @@ This checks also `file-name-as-directory', `file-name-directory',
 	    ;; Do not overwrite if excluded.
 	    (cl-letf (((symbol-function #'y-or-n-p) #'tramp--test-always)
 		      ;; Ange-FTP.
-		      ((symbol-function 'yes-or-no-p) #'tramp--test-always))
+		      ((symbol-function #'yes-or-no-p) #'tramp--test-always))
 	      (write-region "foo" nil tmp-name nil nil nil 'mustbenew))
 	    (should-error
 	     (cl-letf (((symbol-function #'y-or-n-p) #'ignore)
@@ -6738,8 +6738,9 @@ INPUT, if non-nil, is a string sent to the process."
 		(insert "foo")
 		;; Bug#53207: with `create-lockfiles' nil, saving the
 		;; buffer results in a prompt.
-		(cl-letf (((symbol-function 'yes-or-no-p)
-			   (lambda (_) (ert-fail "Test failed unexpectedly"))))
+		(cl-letf (((symbol-function #'read-from-minibuffer)
+			   (lambda (&rest _)
+			     (ert-fail "Test failed unexpectedly"))))
 		  (should (buffer-modified-p))
 		  (save-buffer)
 		  (should-not (buffer-modified-p)))
@@ -6757,7 +6758,7 @@ INPUT, if non-nil, is a string sent to the process."
 		;; modification time properly, for them it doesn't
 		;; make sense to test.
 		(when (not (verify-visited-file-modtime))
-		  (cl-letf (((symbol-function 'read-char-choice)
+		  (cl-letf (((symbol-function #'read-char-choice)
 			     (lambda (prompt &rest _) (message "%s" prompt) ?y)))
 		    (ert-with-message-capture captured-messages
 		      (insert "bar")
@@ -6773,8 +6774,8 @@ INPUT, if non-nil, is a string sent to the process."
 			(should (file-locked-p tmp-name)))))
 
 		  ;; `save-buffer' removes the file lock.
-		  (cl-letf (((symbol-function 'yes-or-no-p) #'tramp--test-always)
-			    ((symbol-function 'read-char-choice)
+		  (cl-letf (((symbol-function #'yes-or-no-p) #'tramp--test-always)
+			    ((symbol-function #'read-char-choice)
 			     (lambda (&rest _) ?y)))
 		    (should (buffer-modified-p))
 		    (save-buffer)
