@@ -1,3 +1,7 @@
+2023-06-15  Basil L. Contovounesios  <contovob@tcd.ie>
+
+	* tramp.texi (File name completion): Consistently mark up nil as @code.
+
 2023-05-30  Michael Albinus  <michael.albinus@gmx.de>
 
 	Version 2.6.0.5 released.
