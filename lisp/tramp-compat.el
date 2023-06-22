@@ -40,6 +40,7 @@
 (declare-function tramp-error "tramp")
 (declare-function tramp-file-name-handler "tramp")
 (declare-function tramp-tramp-file-p "tramp")
+(defvar tramp-syntax)
 (defvar tramp-temp-name-prefix)
 
 (defconst tramp-compat-emacs-compiled-version (eval-when-compile emacs-version)
@@ -127,7 +128,6 @@ NAME is unquoted."
 ;; support old settings.
 (defsubst tramp-compat-tramp-syntax ()
   "Return proper value of `tramp-syntax'."
-  (defvar tramp-syntax)
   (cond ((eq tramp-syntax 'ftp) 'default)
 	((eq tramp-syntax 'sep) 'separate)
 	(t tramp-syntax)))
