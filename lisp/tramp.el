@@ -3863,7 +3863,7 @@ Let-bind it when necessary.")
 (defun tramp-handle-access-file (filename string)
   "Like `access-file' for Tramp files."
   (setq filename (file-truename filename))
-  (with-parsed-tramp-file-name filename v
+  (with-parsed-tramp-file-name filename nil
     (if (file-exists-p filename)
 	(unless
 	    (funcall
